@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en" prefix="og: http://ogp.me/ns#">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title id="pageTitle">00:00 | Aesthetic Stopwatch | Chinmay</title>
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Aesthetic Stopwatch by Chinmay – a beautiful, minimal, glassmorphic stopwatch for timing, productivity, and workouts. Features lap tracking, themes, and modern UI.">
+    <meta name="keywords" content="stopwatch, timer, glassmorphic, aesthetic, minimal, productivity, lap, modern, Chinmay">
+    <meta name="author" content="Chinmay">
+    <meta name="robots" content="index, follow">
+    <meta name="theme-color" content="#66a6ff">
+    <meta name="msapplication-TileColor" content="#66a6ff">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="mobile-web-app-capable" content="yes">
+    <link rel="canonical" href="https://stopwatch.chinmayjha.tech/">
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="./config/manifest.json">
+    
+    <!-- Favicons -->
+    <link rel="icon" type="image/png" href="./assets/icons/favicon.png">
+    <link rel="icon" type="image/svg+xml" href="./assets/icons/favicon.svg">
+    <link rel="apple-touch-icon" href="./assets/icons/favicon.png">
+    <link rel="mask-icon" href="./assets/icons/favicon.svg" color="#66a6ff">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Aesthetic Stopwatch | Chinmay">
+    <meta property="og:description" content="A beautiful, minimal, glassmorphic stopwatch for timing, productivity, and workouts. Lap tracking, themes, and more.">
+    <meta property="og:image" content="https://stopwatch.chinmayjha.tech/assets/icons/og-image.png">
+    <meta property="og:url" content="https://stopwatch.chinmayjha.tech/">
+    <meta property="og:site_name" content="Aesthetic Stopwatch">
+    
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Aesthetic Stopwatch | Chinmay">
+    <meta name="twitter:description" content="A beautiful, minimal, glassmorphic stopwatch for timing, productivity, and workouts. Lap tracking, themes, and more.">
+    <meta name="twitter:image" content="https://stopwatch.chinmayjha.tech/assets/icons/og-image.png">
+    
+    <!-- Stylesheet -->
+    <link rel="stylesheet" href="./assets/css/styles.css">
+    
+    <!-- Resource Preloading for Performance -->
+    <link rel="preload" href="./assets/css/styles.css" as="style">
+    <link rel="preload" href="./assets/js/script.js" as="script">
+    <link rel="dns-prefetch" href="https://fonts.googleapis.com">
+    <link rel="dns-prefetch" href="https://fonts.gstatic.com">
+    
+    <!-- Google Fonts with Optimizations -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap&text=0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz.:,!?-" rel="stylesheet">
+    
+    <!-- Enhanced JSON-LD Structured Data -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Aesthetic Stopwatch",
+        "alternateName": "Premium Glassmorphic Timer",
+        "description": "A beautiful, minimal, glassmorphic stopwatch for timing, productivity, and workouts. Features lap tracking, custom themes, and modern UI design.",
+        "url": "https://stopwatch.chinmayjha.tech/",
+        "applicationCategory": "ProductivityApplication",
+        "applicationSubCategory": "Timer",
+        "operatingSystem": "Web Browser",
+        "browserRequirements": "HTML5, CSS3, JavaScript ES6+",
+        "author": {
+            "@type": "Person",
+            "@id": "https://chinmayjha.tech/#person",
+            "name": "Chinmay Jha",
+            "url": "https://chinmayjha.tech",
+            "email": "chinmayjha2021@gmail.com",
+            "jobTitle": "Web Developer",
+            "description": "16-year-old web developer specializing in modern UI/UX design"
+        },
+        "creator": {
+            "@type": "Person",
+            "@id": "https://chinmayjha.tech/#person"
+        },
+        "publisher": {
+            "@type": "Person",
+            "@id": "https://chinmayjha.tech/#person"
+        },
+        "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "USD",
+            "availability": "https://schema.org/InStock"
+        },
+        "featureList": [
+            "Precision timing with millisecond accuracy",
+            "Lap time tracking and comparison", 
+            "Multiple glassmorphic themes",
+            "Custom accent colors",
+            "Fullscreen mode",
+            "Keyboard shortcuts",
+            "Sound and vibration feedback",
+            "Responsive design",
+            "Offline functionality"
+        ],
+        "screenshot": "https://stopwatch.chinmayjha.tech/assets/icons/og-image.png",
+        "dateCreated": "2024-01-01",
+        "dateModified": "2025-10-08",
+        "version": "1.0.0",
+        "inLanguage": "en-US",
+        "accessibilityFeature": [
+            "alternativeText",
+            "highContrast", 
+            "keyboardNavigation",
+            "readingOrder"
+        ],
+        "accessibilityHazard": "none",
+        "accessibilityControl": [
+            "fullKeyboardControl",
+            "fullMouseControl", 
+            "fullTouchControl"
+        ]
+    }
+    </script>
+</head>
+
+<body>
+    <!-- Hero Background -->
+    <div id="heroBg" class="hero-bg"></div>
+    
+    <!-- Navbar (top left, glassy, premium) -->
+    <nav class="navbar-premium">
+        <div class="navbar-content">
+            <div class="navbar-brand">
+                <span class="navbar-logo" aria-label="Stopwatch Logo">
+                    <!-- Lucide Timer Icon -->
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="14" r="8"/><path d="M12 10v4l2 2"/><path d="M9 2h6"/><path d="M19.5 6.5 16.85 9.15"/></svg>
+                </span>
+                <span class="navbar-title">Stopwatch</span>
+            </div>
+            <span class="navbar-by">by Chinmay</span>
+        </div>
+    </nav>
+    
+    <!-- Main Content (centered timer, premium) -->
+    <main class="main-premium" role="main">
+        <section class="timer-premium" aria-labelledby="timeDisplay">
+            <div id="timeDisplay" class="time-premium" role="timer" aria-live="polite" aria-atomic="true">00:00</div>
+            <div id="subtitleHero" class="subtitle-premium" aria-live="polite">Ready to time your moments</div>
+            <div class="button-group-premium">
+                <button id="startPauseBtn" class="control-btn-premium primary" aria-label="Start or Pause">
+                    <span id="startPauseIcon" class="btn-icon"></span>
+                    <span class="btn-text">Start</span>
+                </button>
+                <button id="lapBtn" class="control-btn-premium secondary lap-btn-enhanced" aria-label="Lap" disabled>
+                    <span class="btn-icon lap-icon">
+                        <!-- Lucide Flag icon -->
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg>
+                    </span>
+                    <span class="btn-text">Lap</span>
+                </button>
+                <button id="resetBtn" class="control-btn-premium secondary" aria-label="Reset" disabled>
+                    <span class="btn-text">Reset</span>
+                </button>
+            </div>
+        </section>
+        
+        <!-- Laps Section -->
+        <section id="lapsContainer" class="laps-container-premium">
+            <div class="laps-header">
+                <div class="laps-title-enhanced">
+                    <span class="laps-icon">
+                        <!-- Lucide List icon -->
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+                    </span>
+                    <span class="laps-title-text">Lap Times</span>
+                </div>
+                <div class="laps-count" id="lapsCount">0 laps</div>
+            </div>
+            <div class="laps-list-container">
+                <ul id="lapsList" class="laps-list-enhanced"></ul>
+            </div>
+        </section>
+    </main>
+
+    <!-- Share Modal -->
+    <div id="shareOverlay" class="overlay"></div>
+    <div id="shareModal" class="share-modal-enhanced">
+        <div class="share-modal-header">
+            <div class="share-icon">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="18" cy="5" r="3"/>
+                    <circle cx="6" cy="12" r="3"/>
+                    <circle cx="18" cy="19" r="3"/>
+                    <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/>
+                    <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
+                </svg>
+            </div>
+            <h3>Share This Stopwatch</h3>
+            <button id="closeShareBtn" class="share-close-btn">×</button>
+        </div>
+        <div class="share-modal-content">
+            <p class="share-description">Copy the link and share this beautiful stopwatch with others!</p>
+            <div class="share-url-container">
+                <div class="url-display">
+                    <span class="url-text">https://stopwatch.chinmayjha.tech/</span>
+                </div>
+                <button id="copyShareLinkBtn" class="copy-share-btn">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                    </svg>
+                    <span class="btn-text">Copy Link</span>
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Developer Info Button (Bottom Left) -->
+    <div class="developer-info-btn" id="developerInfoBtn">
+        <span class="developer-avatar">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                <circle cx="12" cy="7" r="4"/>
+            </svg>
+        </span>
+        <span class="developer-tooltip">About Developer</span>
+    </div>
+
+    <!-- Developer Info Modal -->
+    <div class="developer-overlay" id="developerOverlay" style="display:none;"></div>
+    <div class="developer-modal" id="developerModal" role="dialog" aria-modal="true" aria-labelledby="developerTitle" style="display:none;">
+        <button class="close-btn" id="closeDeveloperBtn" aria-label="Close Developer Info">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+        </button>
+        <div class="developer-modal-content">
+            <div class="developer-header">
+                <div class="developer-photo">
+                    <img src="https://chinmayjha.tech/assets/img/favicon.jpg" alt="Chinmay Jha" class="developer-image">
+                </div>
+                <h2 class="developer-name" id="developerTitle">Chinmay Jha</h2>
+                <p class="developer-role">Student • Web Developer • Freelancer</p>
+            </div>
+            <div class="developer-bio">
+                <p>Hi, I’m Chinmay Jha, a 16-year-old web developer from India. I started coding at 11 with HTML and CSS, and since then, I’ve been building all kinds of fun and functional web projects—from simple websites to Discord bots. Over time, I’ve picked up JavaScript and now focus on creating clean, user-friendly interfaces.</p>
+                <p>This stopwatch is one of my personal projects, built to combine both functionality and aesthetics. I’m always experimenting and learning new things, and projects like this help me push my creativity and skills a little further each time.</p>
+            </div>
+            <div class="developer-links">
+                <a href="https://chinmayjha.tech" target="_blank" rel="noopener" class="developer-link website-link">
+                    <span class="link-icon">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"/>
+                            <line x1="2" y1="12" x2="22" y2="12"/>
+                            <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+                        </svg>
+                    </span>
+                    <span class="link-text">Visit Website</span>
+                    <span class="link-url">chinmayjha.tech</span>
+                </a>
+                <a href="mailto:chinmayjha2021@gmail.com" class="developer-link email-link">
+                    <span class="link-icon">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                            <polyline points="22,6 12,13 2,6"/>
+                        </svg>
+                    </span>
+                    <span class="link-text">Send Email</span>
+                    <span class="link-url">chinmayjha2021@gmail.com</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Floating Action Button Group (Bottom Right) -->
+    <div class="fab-group">
+        <button class="fab-btn" id="shareBtn" aria-label="Share this stopwatch">
+            <span class="fab-icon">
+                <!-- Lucide Share2 icon -->
+                <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+            </span>
+            <span class="fab-tooltip">Share</span>
+        </button>
+        <button class="fab-btn" id="fullscreenBtn" aria-label="Toggle Fullscreen">
+            <span class="fab-icon">
+                <!-- Lucide Maximize icon -->
+                <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M8 3v3a1 1 0 0 1-1 1H3"/><path d="M21 8h-3a1 1 0 0 1-1-1V3"/><path d="M16 21v-3a1 1 0 0 1 1-1h3"/><path d="M3 16h3a1 1 0 0 1 1 1v3"/></svg>
+            </span>
+            <span class="fab-tooltip">Fullscreen</span>
+        </button>
+        <button class="fab-btn" id="settingsToggle" aria-label="Open Settings">
+            <span class="fab-icon">
+                <!-- Lucide Settings icon -->
+                <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 8 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82A1.65 1.65 0 0 0 3 12.9V12a2 2 0 0 1 0-4v-.09A1.65 1.65 0 0 0 4.6 8a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33h.09A1.65 1.65 0 0 0 12 3.6V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51h.09a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82v.09A1.65 1.65 0 0 0 21 12v.09a1.65 1.65 0 0 0-1.6 1.51z"/>
+            </span>
+            <span class="fab-tooltip">Settings</span>
+        </button>
+    </div>
+
+    <!-- Settings Panel (side panel, glassy, fixed right) -->
+    <div id="settingsOverlay" class="settings-overlay"></div>
+    <aside id="settingsPanel" class="settings-panel" tabindex="-1" aria-modal="true" role="dialog">
+        <div class="settings-content">
+            <div class="settings-header">
+                <span class="settings-title">Settings</span>
+                <button id="closeSettingsBtn" class="close-btn" aria-label="Close Settings">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                </button>
+            </div>
+            <div class="settings-body">
+                <div class="setting-group">
+                    <div class="setting-label">Background Presets</div>
+                    <div class="background-presets">
+                        <button class="preset-btn" data-bg="morning-mist" aria-label="Morning Mist" style="background-image:url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=600&q=80');"></button>
+                        <button class="preset-btn" data-bg="cyber-night" aria-label="Cyber Night" style="background-image:url('https://plus.unsplash.com/premium_photo-1720694818685-60a176ddfedf?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8YWVzdGhldGljfGVufDB8fDB8fHww');"></button>
+                        <button class="preset-btn" data-bg="cotton-candy" aria-label="Cotton Candy" style="background-image:url('https://images.unsplash.com/photo-1504253492562-cbc4dc540fcb?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTZ8fGFlc3RoZXRpY3xlbnwwfHwwfHx8MA%3D%3D');"></button>
+                        <button class="preset-btn" data-bg="minimal-sand" aria-label="Minimal Sand" style="background-image:url('https://images.unsplash.com/photo-1502082553048-f009c37129b9?auto=format&fit=crop&w=600&q=80');"></button>
+                    </div>
+                    <div class="custom-background">
+                        <label for="backgroundUpload" class="file-upload-label">
+                            <input type="file" id="backgroundUpload" accept="image/*" hidden />
+                            Upload Custom Image
+                        </label>
+                    </div>
+                </div>
+                
+                <!-- Theme Section -->
+                <div class="setting-group">
+                    <div class="setting-label">Theme</div>
+                    <div class="theme-selector">
+                        <label class="theme-option">
+                            <input type="radio" name="theme" value="light" checked>
+                            <span class="theme-radio"></span>
+                            <span class="theme-text">Light</span>
+                        </label>
+                        <label class="theme-option">
+                            <input type="radio" name="theme" value="dark">
+                            <span class="theme-radio"></span>
+                            <span class="theme-text">Dark</span>
+                        </label>
+                        <label class="theme-option">
+                            <input type="radio" name="theme" value="auto">
+                            <span class="theme-radio"></span>
+                            <span class="theme-text">Auto</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Accent Color Section -->
+                <div class="setting-group">
+                    <div class="setting-label">Accent Color</div>
+                    <div class="color-picker-wrapper">
+                        <div class="custom-color-picker-container">
+                            <input type="color" id="accentColorPicker" value="#66a6ff">
+                        </div>
+                        <div class="color-presets">
+                            <button class="color-preset" data-color="#66a6ff" style="background: #66a6ff;"></button>
+                            <button class="color-preset" data-color="#ff6b6b" style="background: #ff6b6b;"></button>
+                            <button class="color-preset" data-color="#4ecdc4" style="background: #4ecdc4;"></button>
+                            <button class="color-preset" data-color="#ffe66d" style="background: #ffe66d;"></button>
+                            <button class="color-preset" data-color="#ff8cc8" style="background: #ff8cc8;"></button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sound & Vibration Section -->
+                <div class="setting-group">
+                    <div class="setting-label">Sound & Vibration</div>
+                    <div class="toggle-group">
+                        <label class="custom-toggle">
+                            <input type="checkbox" id="soundToggle" checked>
+                            <span class="toggle-checkbox"></span>
+                            <span class="toggle-text">Sound Effects</span>
+                        </label>
+                        <label class="custom-toggle">
+                            <input type="checkbox" id="vibrationToggle" checked>
+                            <span class="toggle-checkbox"></span>
+                            <span class="toggle-text">Vibration</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </aside>
+    
+    <!-- Audio Elements -->
+    <audio id="tickSound" preload="auto">
+        <source src="data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmceAjiS2faActMEJIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmceAjiS2faActMEJIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmceAjiS2faActMEJIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmceAjiS2faActMEJIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmceAjiS2faActMEJIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmceAjiS2faActME" type="audio/wav">
+    </audio>
+
+    <!-- JavaScript -->
+    <script src="./assets/js/script.js"></script>
+</body>
+</html>
