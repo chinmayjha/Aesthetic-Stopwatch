@@ -314,6 +314,16 @@
     padding-bottom: 1rem;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
+.laps-actions { display:flex; align-items:center; gap:0.5rem; }
+.laps-action-btn { 
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.15);
+    color: #fff; width: 36px; height: 36px; border-radius: 10px;
+    display:flex; align-items:center; justify-content:center; cursor:pointer;
+    transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+}
+.laps-action-btn:hover { background: rgba(255,255,255,0.16); border-color: rgba(255,255,255,0.25); transform: translateY(-1px); }
+.laps-action-btn.danger:hover { background: rgba(255, 100, 100, 0.15); border-color: rgba(255, 100, 100, 0.35); }
 
 .laps-title-enhanced {
     display: flex;
@@ -512,20 +522,23 @@
     transform: translate(-50%, -50%) scale(1);
 }
 
-@media (max-width: 600px) {
+@media (max-width: 700px) {
     .settings-panel {
-        width: 98vw;
-        border-radius: 1.2rem 1.2rem 0 0;
+        width: 100vw;
+        max-width: 100vw;
+        border-radius: 1rem 1rem 0 0;
         top: auto;
         bottom: 0;
         right: 0;
         left: 0;
-        height: 60vh;
-        max-width: 100vw;
+        height: min(70vh, 100vh - env(safe-area-inset-top) - env(safe-area-inset-bottom));
         transform: translateY(100%);
     }
     .settings-panel.show {
         transform: translateY(0);
+    }
+    .settings-content {
+        padding-bottom: calc(1rem + env(safe-area-inset-bottom));
     }
 }
 /* --- FAB TOOLTIP --- */
@@ -830,8 +843,13 @@
     
     .developer-modal {
         min-width: 300px;
-        width: 95vw;
-        margin: 1rem;
+        width: 92vw;
+        margin: 0;
+        left: 50%;
+        right: auto;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        max-height: calc(92vh - env(safe-area-inset-top) - env(safe-area-inset-bottom));
     }
     
     .developer-modal-content {
@@ -2079,13 +2097,13 @@ body::before {
 
     /* --- THEME MODES --- */
 
-body.theme-dark {
+html.theme-dark, body.theme-dark {
     --glass-bg: rgba(0,0,0,0.22);
     --glass-border: rgba(255,255,255,0.10);
     --extended-bg: #181c2a;
     color: #fff;
 }
-body.theme-light {
+html.theme-light, body.theme-light {
     --glass-bg: rgba(255,255,255,0.22);
     --glass-border: rgba(0,0,0,0.10);
     --extended-bg: #f6f8fa;
@@ -2536,8 +2554,8 @@ body.font-jetbrains-mono { --font-body: 'JetBrains Mono', monospace; }
     }
 }
 
-/* Smooth transitions for better UX */
-* {
+/* Limit global transitions to reduce repaint overhead */
+*:not(.time-premium) {
     transition: color 0.2s ease, background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
 }
 

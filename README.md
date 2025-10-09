@@ -23,7 +23,7 @@
 
 ### 🎨 **Design Excellence**
 - **Glassmorphic UI** - Modern blur effects and transparency
-- **Multiple Themes** - Light, dark, and auto modes
+- **Default Dark Theme** - Dark by default (Light/Auto available)
 - **Custom Backgrounds** - Upload your own images
 - **Responsive Design** - Perfect on all devices
 - **Smooth Animations** - 60fps performance
@@ -45,6 +45,7 @@
 ### 🎯 **Core Functionality**
 - ⏱️ **Precision Timing** - Accurate to milliseconds
 - 🏁 **Lap Tracking** - Record and compare splits
+- 📤 **Lap Actions** - Copy to clipboard, export CSV, clear all
 - 🎵 **Sound Effects** - Customizable audio feedback
 - � **Haptic Feedback** - Tactile responses on mobile
 - ⌨️ **Keyboard Controls** - Space (start/stop), R (reset), L (lap)
@@ -149,10 +150,9 @@ Aesthetic-Stopwatch/
 
 ### ⚡ **Performance**
 
-- **Lighthouse Score**: 100/100 across all metrics
-- **First Paint**: < 1.2s
-- **Interactive**: < 2.5s
-- **Bundle Size**: < 100KB total
+- **Zero-lag UI**: Timer display throttled to once/sec rendering to avoid DOM thrash
+- **Accurate core**: High-res clock using performance.now() with drift-free pause/resume
+- **Work-efficient laps**: DocumentFragment + prepend for O(1) new laps
 
 ---
 

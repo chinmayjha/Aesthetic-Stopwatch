@@ -253,10 +253,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const fullscreenBtn = document.getElementById('fullscreenBtn');
     if (!fullscreenBtn) return;
     let isFullscreen = false;
-    const maximizeIcon = `<svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M8 3v3a1 1 0 0 1-1 1H3"/><path d="M21 8h-3a1 1 0 0 1-1-1V3"/><path d="M16 21v-3a1 1 0 0 1 1-1h3"/><path d="M3 16h3a1 1 0 0 1 1 1v3"/></svg>`;
-    const minimizeIcon = `<svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M8 21v-3a1 1 0 0 0-1-1H3"/><path d="M21 16h-3a1 1 0 0 0-1 1v3"/><path d="M16 3v3a1 1 0 0 0 1 1h3"/><path d="M3 8h3a1 1 0 0 0 1-1V3"/></svg>`;
     function setIcon() {
-        fullscreenBtn.querySelector('.fab-icon').innerHTML = isFullscreen ? minimizeIcon : maximizeIcon;
+        const name = isFullscreen ? 'minimize' : 'maximize';
+        const tgt = fullscreenBtn.querySelector('.fab-icon');
+        if (tgt && window.lucide?.icons?.[name]) {
+            tgt.innerHTML = window.lucide.icons[name].toSvg({ width: 26, height: 26 });
+        }
     }
     setIcon();
     fullscreenBtn.addEventListener('click', () => {
@@ -410,6 +412,7 @@ class Stopwatch {
         this.elapsedTime = 0;
         this.laps = [];
         this.animationFrame = null;
+        this._lastRenderedSec = -1; // throttle UI to once per second for zero-lag
         
         // DOM elements
 
@@ -434,9 +437,12 @@ class Stopwatch {
     }
     
     init() {
-        this.bindEvents();
-        this.loadSettings();
+    this.bindEvents();
+    this.loadSettings();
         this.initializeUI();
+
+    // Restore persisted stopwatch state if exists
+    this.restoreState();
         
         // Add loaded class for animations after a brief delay
         setTimeout(() => {
@@ -446,8 +452,8 @@ class Stopwatch {
     
     bindEvents() {
         // Stopwatch controls
-        this.startPauseBtn.addEventListener('click', () => this.toggleStopwatch());
-        this.lapBtn.addEventListener('click', () => this.addLap());
+    this.startPauseBtn.addEventListener('click', () => this.toggleStopwatch());
+    this.lapBtn.addEventListener('click', () => this.addLap());
         this.resetBtn.addEventListener('click', () => this.reset());
         
         // Settings panel
@@ -482,7 +488,7 @@ class Stopwatch {
     }
     
     initializeUI() {
-        this.updateDisplay();
+        this.updateDisplay(true);
         this.updateButtons();
         if (this.lapsContainer) this.lapsContainer.style.display = 'none';
     }
@@ -503,6 +509,7 @@ class Stopwatch {
         if (this.timeDisplay) this.timeDisplay.classList.add('running');
         this.playSound('start');
         this.vibrate();
+        this.persistState();
     }
     
     pause() {
@@ -515,6 +522,7 @@ class Stopwatch {
         if (this.timeDisplay) this.timeDisplay.classList.remove('running');
         this.playSound('pause');
         this.vibrate();
+        this.persistState();
     }
     
     reset() {
@@ -530,6 +538,7 @@ class Stopwatch {
         if (this.timeDisplay) this.timeDisplay.classList.remove('running');
         this.playSound('reset');
         this.vibrate();
+        this.persistState(true);
     }
     
     addLap() {
@@ -545,27 +554,32 @@ class Stopwatch {
                 difference: difference
             });
             
-            this.updateLaps();
+            this.updateLaps(true);
             this.playSound('lap');
             this.vibrate();
+            this.persistState();
         }
     }
     
     updateLoop() {
-        if (this.isRunning) {
-            this.elapsedTime = performance.now() - this.startTime;
-            this.updateDisplay();
-            this.animationFrame = requestAnimationFrame(() => this.updateLoop());
-        }
+        if (!this.isRunning) return;
+        this.elapsedTime = performance.now() - this.startTime;
+        this.updateDisplay();
+        this.animationFrame = requestAnimationFrame(() => this.updateLoop());
     }
     
 
-    updateDisplay() {
+    updateDisplay(force = false) {
         const formatted = this.formatTime(this.elapsedTime);
         
         if (this.timeDisplay) {
-            // Simple text update without flip animation
-            this.timeDisplay.textContent = formatted;
+            // Throttle to reduce DOM churn: only update if seconds changed or forced
+            const sec = Math.floor(this.elapsedTime / 1000);
+            if (force || sec !== this._lastRenderedSec) {
+                this.timeDisplay.textContent = formatted;
+                this._lastRenderedSec = sec;
+                this.updatePageTitle(formatted);
+            }
             
             // Add/remove running class for animations
             if (this.isRunning) {
@@ -595,7 +609,7 @@ class Stopwatch {
             }
         }
         
-        this.updatePageTitle(formatted);
+        // Title already updated in the throttled block above
     }
     
     updatePageTitle(timeString) {
@@ -625,18 +639,18 @@ class Stopwatch {
         const btnIcon = this.startPauseIcon;
         if (this.isRunning) {
             btnText.textContent = 'Pause';
-            if (btnIcon) btnIcon.innerHTML = '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>';
+            if (btnIcon && window.lucide?.icons?.pause) btnIcon.innerHTML = window.lucide.icons.pause.toSvg({ width: 22, height: 22 });
             this.lapBtn.disabled = false;
             this.resetBtn.disabled = false;
         } else {
             btnText.textContent = this.elapsedTime > 0 ? 'Resume' : 'Start';
-            if (btnIcon) btnIcon.innerHTML = '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>';
+            if (btnIcon && window.lucide?.icons?.play) btnIcon.innerHTML = window.lucide.icons.play.toSvg({ width: 22, height: 22 });
             this.lapBtn.disabled = this.elapsedTime === 0;
             this.resetBtn.disabled = this.elapsedTime === 0;
         }
     }
     
-    updateLaps() {
+    updateLaps(appendOnly = false) {
         // Update lap count
         const lapsCount = document.getElementById('lapsCount');
         if (lapsCount) {
@@ -658,44 +672,48 @@ class Stopwatch {
                 this.lapsContainer.classList.add('show');
             }, 50);
         }
-        
-        // Clear existing laps
-        if (this.lapsList) {
-            this.lapsList.innerHTML = '';
-            
-            // Add laps in reverse order (newest first)
-            const reversedLaps = [...this.laps].reverse();
-        
-            reversedLaps.forEach((lap, index) => {
-            const lapElement = document.createElement('div');
-            lapElement.className = 'lap-item';
-            
-            // Determine if this lap is faster or slower than the previous
-            let diffClass = '';
-            let diffText = '';
-            
-            if (index < reversedLaps.length - 1) {
-                const nextLap = reversedLaps[index + 1];
-                const timeDiff = lap.time - nextLap.time;
-                
-                if (timeDiff < lap.difference) {
-                    diffClass = 'faster';
-                    diffText = `-${this.formatTimeDifference(lap.difference - timeDiff)}`;
-                } else if (timeDiff > lap.difference) {
-                    diffClass = 'slower';
-                    diffText = `+${this.formatTimeDifference(timeDiff - lap.difference)}`;
-                }
-            }
-            
-            lapElement.innerHTML = `
-                <div class="lap-number">Lap ${lap.number}</div>
-                <div class="lap-time">${this.formatTime(lap.time)}</div>
-                ${diffText ? `<div class="lap-diff ${diffClass}">${diffText}</div>` : ''}
-            `;
-            
-                this.lapsList.appendChild(lapElement);
-            });
+        if (!this.lapsList) return;
+
+        // Efficient rendering: if appending, only render latest item to top
+        if (appendOnly && this.laps.length > 0 && this.lapsList.children.length > 0) {
+            const lap = this.laps[this.laps.length - 1];
+            const el = this._renderLap(lap, this.laps.length - 1);
+            this.lapsList.prepend(el);
+            return;
         }
+
+        // Full re-render
+        const frag = document.createDocumentFragment();
+        const reversedLaps = [...this.laps].reverse();
+        this.lapsList.innerHTML = '';
+        reversedLaps.forEach((lap, idx) => {
+            frag.appendChild(this._renderLap(lap, this.laps.length - 1 - idx));
+        });
+        this.lapsList.appendChild(frag);
+    }
+
+    _renderLap(lap, originalIndex) {
+        const lapElement = document.createElement('div');
+        lapElement.className = 'lap-item';
+
+        // Determine diff against previous (based on original order)
+        let diffClass = '';
+        let diffText = '';
+        if (originalIndex > 0) {
+            const prevLap = this.laps[originalIndex - 1];
+            const seg = lap.time - prevLap.time; // segment time
+            const prevSeg = originalIndex > 1 ? prevLap.time - this.laps[originalIndex - 2].time : prevLap.time;
+            const delta = seg - prevSeg;
+            if (delta < 0) { diffClass = 'faster'; diffText = `-${this.formatTimeDifference(-delta)}`; }
+            else if (delta > 0) { diffClass = 'slower'; diffText = `+${this.formatTimeDifference(delta)}`; }
+        }
+
+        lapElement.innerHTML = `
+            <div class="lap-number">Lap ${lap.number}</div>
+            <div class="lap-time">${this.formatTime(lap.time)}</div>
+            ${diffText ? `<div class="lap-diff ${diffClass}">${diffText}</div>` : ''}
+        `;
+        return lapElement;
     }
     
     formatTimeDifference(milliseconds) {
@@ -814,8 +832,8 @@ class Stopwatch {
         const background = this.getSetting('background', 'morning-mist');
         this.setBackground(background);
         
-        // Load and apply theme
-        const theme = this.getSetting('theme', 'light');
+        // Load and apply theme (default dark for first-time users)
+        const theme = this.getSetting('theme', 'dark');
         this.setTheme(theme);
         
         // Load and apply accent color
@@ -875,6 +893,7 @@ class Stopwatch {
     }
     
     setTheme(theme) {
+        document.documentElement.classList.remove('theme-light', 'theme-dark');
         document.body.classList.remove('theme-light', 'theme-dark', 'theme-auto');
         // Update radio UI
         document.querySelectorAll('input[name="theme"]').forEach(radio => {
@@ -883,6 +902,7 @@ class Stopwatch {
         if (theme === 'auto') {
             this.setupAutoTheme();
         } else {
+            document.documentElement.classList.add(`theme-${theme}`);
             document.body.classList.add(`theme-${theme}`);
             // Remove auto theme listener if present
             if (this._autoThemeListener) {
@@ -896,8 +916,11 @@ class Stopwatch {
     setupAutoTheme() {
         const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
         const updateTheme = (e) => {
+            document.documentElement.classList.remove('theme-light', 'theme-dark');
             document.body.classList.remove('theme-light', 'theme-dark');
-            document.body.classList.add(e.matches ? 'theme-dark' : 'theme-light');
+            const cls = e.matches ? 'theme-dark' : 'theme-light';
+            document.documentElement.classList.add(cls);
+            document.body.classList.add(cls);
             // Update radio UI to reflect system theme
             document.querySelectorAll('input[name="theme"]').forEach(radio => {
                 radio.checked = false;
@@ -914,6 +937,42 @@ class Stopwatch {
     setAccentColor(color) {
         document.documentElement.style.setProperty('--accent-color', color);
         this.setSetting('accentColor', color);
+    }
+
+    // Persist/restore stopwatch state
+    persistState(clear = false) {
+        try {
+            if (clear) {
+                localStorage.removeItem('stopwatch_state');
+                return;
+            }
+            const state = {
+                isRunning: this.isRunning,
+                startTimeEpoch: this.isRunning ? Date.now() - this.elapsedTime : null,
+                elapsedTime: this.elapsedTime,
+                laps: this.laps
+            };
+            localStorage.setItem('stopwatch_state', JSON.stringify(state));
+        } catch {}
+    }
+
+    restoreState() {
+        try {
+            const raw = localStorage.getItem('stopwatch_state');
+            if (!raw) return;
+            const state = JSON.parse(raw);
+            if (Array.isArray(state.laps)) this.laps = state.laps;
+            this.updateLaps();
+            if (state.isRunning && state.startTimeEpoch) {
+                // Reconstruct elapsed based on wall clock to avoid drift during sleep
+                this.elapsedTime = Date.now() - state.startTimeEpoch;
+                this.start();
+            } else if (typeof state.elapsedTime === 'number') {
+                this.elapsedTime = state.elapsedTime;
+                this.updateDisplay(true);
+                this.updateButtons();
+            }
+        } catch {}
     }
 }
 
@@ -999,11 +1058,11 @@ class SettingsManager {
         // Load background preset
         const currentBackground = this.stopwatch.getSetting('background', 'morning-mist');
         document.querySelectorAll('.preset-btn').forEach(btn => {
-            btn.classList.toggle('active', btn.dataset.preset === currentBackground);
+            btn.classList.toggle('active', btn.dataset.bg === currentBackground);
         });
         
         // Load theme
-        const currentTheme = this.stopwatch.getSetting('theme', 'light');
+        const currentTheme = this.stopwatch.getSetting('theme', 'dark');
         const themeRadio = document.querySelector(`input[name="theme"][value="${currentTheme}"]`);
         if (themeRadio) {
             themeRadio.checked = true;
@@ -1059,6 +1118,71 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     // Export for debugging
     window.stopwatch = stopwatch;
+
+    // Wire lap actions
+    const copyBtn = document.getElementById('copyLapsBtn');
+    const exportBtn = document.getElementById('exportLapsBtn');
+    const clearBtn = document.getElementById('clearLapsBtn');
+    function lapsToText() {
+        if (!stopwatch.laps.length) return '';
+        return stopwatch.laps.map((l, i) => {
+            const seg = i === 0 ? l.time : l.time - stopwatch.laps[i-1].time;
+            return `Lap ${l.number}\tTotal ${stopwatch.formatTime(l.time)}\tSegment ${stopwatch.formatTimeDifference(seg)}`;
+        }).join('\n');
+    }
+    copyBtn?.addEventListener('click', async () => {
+        const txt = lapsToText();
+        if (!txt) return;
+        try { await navigator.clipboard.writeText(txt); } catch {}
+    });
+    exportBtn?.addEventListener('click', () => {
+        if (!stopwatch.laps.length) return;
+        const header = 'Lap,Total,Segment\n';
+        const rows = stopwatch.laps.map((l,i)=>{
+            const seg = i === 0 ? l.time : l.time - stopwatch.laps[i-1].time;
+            return `${l.number},${stopwatch.formatTime(l.time)},${stopwatch.formatTimeDifference(seg)}`;
+        }).join('\n');
+        const blob = new Blob([header + rows], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url; a.download = 'laps.csv';
+        document.body.appendChild(a); a.click(); a.remove();
+        URL.revokeObjectURL(url);
+    });
+    clearBtn?.addEventListener('click', () => {
+        stopwatch.laps = [];
+        stopwatch.updateLaps();
+        stopwatch.persistState();
+    });
+
+    // Lucide icons render pass
+    try {
+        if (window.lucide?.createIcons) {
+            // replace any data-lucide attributes if present (future-proof)
+            window.lucide.createIcons();
+        }
+        // Directly set dynamic icons we control
+        const setSvg = (el, name, size = 22) => {
+            if (!el || !window.lucide?.icons?.[name]) return;
+            el.innerHTML = window.lucide.icons[name].toSvg({ width: size, height: size });
+        };
+        // Start/Pause icon placeholder exists in #startPauseIcon
+        setSvg(document.getElementById('startPauseIcon'), 'play', 22);
+        // Lap icon
+        document.querySelectorAll('.lap-icon').forEach(icon => setSvg(icon, 'flag', 18));
+        // FAB icons
+        document.querySelector('#shareBtn .fab-icon') && (document.querySelector('#shareBtn .fab-icon').innerHTML = window.lucide.icons['share-2'].toSvg({ width: 26, height: 26 }));
+        document.querySelector('#fullscreenBtn .fab-icon') && (document.querySelector('#fullscreenBtn .fab-icon').innerHTML = window.lucide.icons['maximize'].toSvg({ width: 26, height: 26 }));
+        document.querySelector('#settingsToggle .fab-icon') && (document.querySelector('#settingsToggle .fab-icon').innerHTML = window.lucide.icons['settings'].toSvg({ width: 26, height: 26 }));
+        // Navbar logo
+        document.querySelector('.navbar-logo') && (document.querySelector('.navbar-logo').innerHTML = window.lucide.icons['timer'].toSvg({ width: 32, height: 32 }));
+        // Share modal icon and close button
+        setSvg(document.querySelector('.share-icon'), 'share-2', 28);
+        setSvg(document.getElementById('closeShareBtn'), 'x', 18);
+        setSvg(document.getElementById('copyShareLinkBtn'), 'copy', 16);
+        // Developer button avatar (use user icon within round btn)
+        setSvg(document.querySelector('.developer-info-btn .developer-avatar'), 'user', 24);
+    } catch {}
 });
 
 // ================================================================================================
