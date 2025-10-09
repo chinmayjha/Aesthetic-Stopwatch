@@ -253,12 +253,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const fullscreenBtn = document.getElementById('fullscreenBtn');
     if (!fullscreenBtn) return;
     let isFullscreen = false;
+    const maximizeIcon = `<svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M8 3v3a1 1 0 0 1-1 1H3"/><path d="M21 8h-3a1 1 0 0 1-1-1V3"/><path d="M16 21v-3a1 1 0 0 1 1-1h3"/><path d="M3 16h3a1 1 0 0 1 1 1v3"/></svg>`;
+    const minimizeIcon = `<svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M8 21v-3a1 1 0 0 0-1-1H3"/><path d="M21 16h-3a1 1 0 0 0-1 1v3"/><path d="M16 3v3a1 1 0 0 0 1 1h3"/><path d="M3 8h3a1 1 0 0 0 1-1V3"/></svg>`;
     function setIcon() {
-        const name = isFullscreen ? 'minimize' : 'maximize';
         const tgt = fullscreenBtn.querySelector('.fab-icon');
-        if (tgt && window.lucide?.icons?.[name]) {
-            tgt.innerHTML = window.lucide.icons[name].toSvg({ width: 26, height: 26 });
-        }
+        if (tgt) tgt.innerHTML = isFullscreen ? minimizeIcon : maximizeIcon;
     }
     setIcon();
     fullscreenBtn.addEventListener('click', () => {
@@ -639,12 +638,12 @@ class Stopwatch {
         const btnIcon = this.startPauseIcon;
         if (this.isRunning) {
             btnText.textContent = 'Pause';
-            if (btnIcon && window.lucide?.icons?.pause) btnIcon.innerHTML = window.lucide.icons.pause.toSvg({ width: 22, height: 22 });
+            if (btnIcon) btnIcon.innerHTML = '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>';
             this.lapBtn.disabled = false;
             this.resetBtn.disabled = false;
         } else {
             btnText.textContent = this.elapsedTime > 0 ? 'Resume' : 'Start';
-            if (btnIcon && window.lucide?.icons?.play) btnIcon.innerHTML = window.lucide.icons.play.toSvg({ width: 22, height: 22 });
+            if (btnIcon) btnIcon.innerHTML = '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>';
             this.lapBtn.disabled = this.elapsedTime === 0;
             this.resetBtn.disabled = this.elapsedTime === 0;
         }
@@ -1155,34 +1154,7 @@ document.addEventListener('DOMContentLoaded', () => {
         stopwatch.persistState();
     });
 
-    // Lucide icons render pass
-    try {
-        if (window.lucide?.createIcons) {
-            // replace any data-lucide attributes if present (future-proof)
-            window.lucide.createIcons();
-        }
-        // Directly set dynamic icons we control
-        const setSvg = (el, name, size = 22) => {
-            if (!el || !window.lucide?.icons?.[name]) return;
-            el.innerHTML = window.lucide.icons[name].toSvg({ width: size, height: size });
-        };
-        // Start/Pause icon placeholder exists in #startPauseIcon
-        setSvg(document.getElementById('startPauseIcon'), 'play', 22);
-        // Lap icon
-        document.querySelectorAll('.lap-icon').forEach(icon => setSvg(icon, 'flag', 18));
-        // FAB icons
-        document.querySelector('#shareBtn .fab-icon') && (document.querySelector('#shareBtn .fab-icon').innerHTML = window.lucide.icons['share-2'].toSvg({ width: 26, height: 26 }));
-        document.querySelector('#fullscreenBtn .fab-icon') && (document.querySelector('#fullscreenBtn .fab-icon').innerHTML = window.lucide.icons['maximize'].toSvg({ width: 26, height: 26 }));
-        document.querySelector('#settingsToggle .fab-icon') && (document.querySelector('#settingsToggle .fab-icon').innerHTML = window.lucide.icons['settings'].toSvg({ width: 26, height: 26 }));
-        // Navbar logo
-        document.querySelector('.navbar-logo') && (document.querySelector('.navbar-logo').innerHTML = window.lucide.icons['timer'].toSvg({ width: 32, height: 32 }));
-        // Share modal icon and close button
-        setSvg(document.querySelector('.share-icon'), 'share-2', 28);
-        setSvg(document.getElementById('closeShareBtn'), 'x', 18);
-        setSvg(document.getElementById('copyShareLinkBtn'), 'copy', 16);
-        // Developer button avatar (use user icon within round btn)
-        setSvg(document.querySelector('.developer-info-btn .developer-avatar'), 'user', 24);
-    } catch {}
+    // No Lucide render pass; using inline SVGs from HTML
 });
 
 // ================================================================================================
