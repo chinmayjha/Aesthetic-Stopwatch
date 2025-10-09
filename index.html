@@ -144,10 +144,7 @@
     <nav class="navbar-premium">
         <div class="navbar-content">
             <div class="navbar-brand">
-                <span class="navbar-logo" aria-label="Stopwatch Logo">
-                    <!-- Lucide Timer Icon -->
-                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="14" r="8"/><path d="M12 10v4l2 2"/><path d="M9 2h6"/><path d="M19.5 6.5 16.85 9.15"/></svg>
-                </span>
+                <span class="navbar-logo" aria-label="Stopwatch Logo"></span>
                 <span class="navbar-title">Stopwatch</span>
             </div>
             <span class="navbar-by">by Chinmay</span>
@@ -181,10 +178,7 @@
         <section id="lapsContainer" class="laps-container-premium">
             <div class="laps-header">
                 <div class="laps-title-enhanced">
-                    <span class="laps-icon">
-                        <!-- Lucide List icon -->
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
-                    </span>
+                    <span class="laps-icon"></span>
                     <span class="laps-title-text">Lap Times</span>
                 </div>
                 <div class="laps-actions">
@@ -223,17 +217,9 @@
     <div id="shareOverlay" class="overlay"></div>
     <div id="shareModal" class="share-modal-enhanced">
         <div class="share-modal-header">
-            <div class="share-icon">
-                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <circle cx="18" cy="5" r="3"/>
-                    <circle cx="6" cy="12" r="3"/>
-                    <circle cx="18" cy="19" r="3"/>
-                    <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/>
-                    <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
-                </svg>
-            </div>
+            <div class="share-icon"></div>
             <h3>Share This Stopwatch</h3>
-            <button id="closeShareBtn" class="share-close-btn">×</button>
+            <button id="closeShareBtn" class="share-close-btn" aria-label="Close"></button>
         </div>
         <div class="share-modal-content">
             <p class="share-description">Copy the link and share this beautiful stopwatch with others!</p>
@@ -241,13 +227,7 @@
                 <div class="url-display">
                     <span class="url-text">https://stopwatch.chinmayjha.tech/</span>
                 </div>
-                <button id="copyShareLinkBtn" class="copy-share-btn">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-                    </svg>
-                    <span class="btn-text">Copy Link</span>
-                </button>
+                <button id="copyShareLinkBtn" class="copy-share-btn"><span class="btn-text">Copy Link</span></button>
             </div>
         </div>
     </div>
@@ -427,6 +407,8 @@
     </audio>
 
     <!-- JavaScript -->
+    <!-- Lucide Icons (global UMD) -->
+    <script src="https://unpkg.com/lucide@latest"></script>
     <script src="./assets/js/script.js"></script>
 </body>
 </html>
