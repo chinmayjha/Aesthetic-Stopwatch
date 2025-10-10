@@ -322,44 +322,7 @@
 }
 
 /* --- PREMIUM LAPS SECTION --- */
-/* Legacy laps container - replaced by mega container */
-.laps-container-premium {
-  display: none;
-}
-
-.laps-title {
-  font-family: "Space Grotesk", sans-serif;
-  font-size: 1.4rem;
-  font-weight: 700;
-  color: #fff;
-  margin-bottom: 1.5rem;
-}
-
-.laps-list {
-  list-style: none;
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: 0.8rem;
-}
-
-.lap-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1rem 1.5rem;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 12px;
-  transition: all 0.25s ease;
-}
-
-.lap-item:hover {
-  background: rgba(255, 255, 255, 0.1);
-  border-color: rgba(255, 255, 255, 0.2);
-}
-
-/* Enhanced Lap Button */
+/* Enhanced Lap Button - Keep for compatibility */
 .lap-btn-enhanced {
   position: relative;
   overflow: hidden;
@@ -390,141 +353,6 @@
   align-items: center;
   justify-content: center;
   margin-right: 0.5rem;
-}
-
-/* Enhanced Laps Section */
-.laps-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: 100%;
-  margin-bottom: 1.5rem;
-  padding-bottom: 1rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-}
-.laps-actions {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-.laps-action-btn {
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  color: #fff;
-  width: 36px;
-  height: 36px;
-  border-radius: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
-}
-.laps-action-btn:hover {
-  background: rgba(255, 255, 255, 0.16);
-  border-color: rgba(255, 255, 255, 0.25);
-  transform: translateY(-1px);
-}
-.laps-action-btn.danger:hover {
-  background: rgba(255, 100, 100, 0.15);
-  border-color: rgba(255, 100, 100, 0.35);
-}
-
-.laps-title-enhanced {
-  display: flex;
-  align-items: center;
-  gap: 0.8rem;
-}
-
-.laps-icon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--accent-color);
-  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
-}
-
-.laps-title-text {
-  font-family: "Space Grotesk", sans-serif;
-  font-size: 1.4rem;
-  font-weight: 700;
-  color: #fff;
-}
-
-.laps-count {
-  font-family: "Inter", sans-serif;
-  font-size: 0.9rem;
-  font-weight: 500;
-  color: rgba(255, 255, 255, 0.7);
-  background: rgba(255, 255, 255, 0.1);
-  padding: 0.3rem 0.8rem;
-  border-radius: 1rem;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.laps-list-container {
-  width: 100%;
-  max-height: 400px;
-  overflow-y: auto;
-  scroll-behavior: smooth;
-  scrollbar-width: thin;
-  scrollbar-color: rgba(102, 166, 255, 0.6) rgba(255, 255, 255, 0.1);
-}
-
-.laps-list-enhanced {
-  list-style: none;
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: 0.6rem;
-}
-
-.laps-list-enhanced .lap-item {
-  position: relative;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1rem 1.2rem;
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 1rem;
-  transition: all 0.25s ease;
-  animation: fadeInUp 0.3s ease-out;
-}
-
-.laps-list-enhanced .lap-item:hover {
-  background: rgba(255, 255, 255, 0.12);
-  border-color: rgba(255, 255, 255, 0.25);
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-}
-
-.laps-list-enhanced .lap-item::before {
-  content: "";
-  position: absolute;
-  left: 0;
-  top: 0;
-  bottom: 0;
-  width: 3px;
-  background: var(--accent-color);
-  border-radius: 0 2px 2px 0;
-  opacity: 0;
-  transition: opacity 0.25s ease;
-}
-
-.laps-list-enhanced .lap-item:hover::before {
-  opacity: 1;
-}
-
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
 }
 
 /* --- SETTINGS PANEL (FIXED RIGHT) --- */
@@ -1765,28 +1593,8 @@ body::before {
   z-index: 1;
 }
 
-/* --- LAPS --- */
-
-.laps-section {
-  width: 100%;
-  max-width: 440px;
-}
-.laps-container {
-  background: var(--glass-bg);
-  border-radius: var(--radius-md);
-  box-shadow: var(--shadow-glass);
-  border: 1.5px solid var(--glass-border);
-  padding: 1.7rem 1.3rem;
-  margin-top: 1.3rem;
-  opacity: 0;
-  transform: translateY(18px);
-  transition: all var(--transition);
-  backdrop-filter: var(--glass-blur);
-}
-.laps-container.show {
-  opacity: 1;
-  transform: translateY(0);
-}
+/* --- LAPS (Legacy - using Tailwind now) --- */
+/* Old laps styles removed for Tailwind compatibility */
 .laps-title {
   font-family: var(--font-title);
   font-weight: 700;
@@ -3203,10 +3011,7 @@ body.font-jetbrains-mono {
     gap: 2rem;
   }
 
-  .laps-container-premium {
-    max-width: 600px;
-    margin: 0 auto;
-  }
+  /* Laps container styling handled by Tailwind */
 
   .settings-panel {
     width: 380px;
@@ -3224,11 +3029,7 @@ body.font-jetbrains-mono {
       flex: 1;
     }
 
-    .laps-container-premium {
-      flex: 1;
-      max-width: unset;
-      max-height: 70vh;
-    }
+    /* Laps container styling handled by Tailwind */
 
     .navbar-premium {
       position: fixed;
@@ -3485,442 +3286,57 @@ input:focus-visible,
 }
 
 /* =================================
-   MEGA LAPS SECTION STYLING
+   TAILWIND-COMPATIBLE STYLES
    ================================= */
-.laps-mega-container {
-  margin: 4rem 0 3rem 0;
-  width: 100%;
-  max-width: 900px;
-  background: linear-gradient(145deg, 
-    rgba(255, 255, 255, 0.12) 0%, 
-    rgba(255, 255, 255, 0.08) 50%, 
-    rgba(255, 255, 255, 0.10) 100%);
-  backdrop-filter: blur(25px) saturate(180%);
-  border: 1px solid rgba(255, 255, 255, 0.25);
-  border-radius: 2.5rem;
-  box-shadow: 0 20px 80px rgba(102, 166, 255, 0.15),
-              0 8px 32px rgba(0, 0, 0, 0.1),
-              inset 0 1px 1px rgba(255, 255, 255, 0.2);
-  overflow: hidden;
-  transform: translateZ(0);
-  contain: layout style;
-}
 
-.laps-hero-header {
-  padding: 2.5rem 2.5rem 2rem 2.5rem;
-  background: linear-gradient(135deg, 
-    rgba(102, 166, 255, 0.15) 0%, 
-    rgba(102, 166, 255, 0.05) 100%);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
-}
-
-.laps-title-mega {
-  display: flex;
-  align-items: center;
-  gap: 1.5rem;
-  margin-bottom: 2rem;
-}
-
-.laps-icon-large {
-  font-size: 3rem;
-  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
-  animation: pulse 3s ease-in-out infinite;
-}
-
-@keyframes pulse {
-  0%, 100% { transform: scale(1); opacity: 1; }
-  50% { transform: scale(1.05); opacity: 0.9; }
-}
-
-.laps-main-title {
-  font-family: "Space Grotesk", sans-serif;
-  font-size: 2.5rem;
-  font-weight: 800;
-  color: #fff;
-  margin: 0;
-  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-  background: linear-gradient(135deg, #fff 0%, rgba(255, 255, 255, 0.8) 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-.laps-stats-row {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-  gap: 1.5rem;
-}
-
-.lap-stat-item {
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 1.2rem;
-  padding: 1.5rem;
-  text-align: center;
-  transition: all 0.3s ease;
-}
-
-.lap-stat-item:hover {
-  background: rgba(255, 255, 255, 0.15);
-  border-color: rgba(255, 255, 255, 0.3);
-  transform: translateY(-2px);
-  box-shadow: 0 8px 32px rgba(102, 166, 255, 0.2);
-}
-
-.lap-stat-label {
-  display: block;
-  font-family: "Inter", sans-serif;
-  font-size: 0.9rem;
-  font-weight: 500;
-  color: rgba(255, 255, 255, 0.7);
-  margin-bottom: 0.5rem;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-.lap-stat-value {
-  display: block;
-  font-family: "Space Grotesk", sans-serif;
-  font-size: 1.6rem;
-  font-weight: 700;
-  color: var(--accent-color);
-  text-shadow: 0 2px 8px rgba(102, 166, 255, 0.4);
-}
-
-.laps-controls-bar {
-  padding: 1.5rem 2.5rem;
-  background: rgba(255, 255, 255, 0.06);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  flex-wrap: wrap;
-}
-
-.lap-control-btn {
-  display: flex;
-  align-items: center;
-  gap: 0.8rem;
-  padding: 0.9rem 1.8rem;
-  font-family: "Inter", sans-serif;
-  font-size: 0.95rem;
-  font-weight: 600;
-  border: none;
-  border-radius: 1.2rem;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  text-transform: none;
-  backdrop-filter: blur(10px);
-}
-
-.lap-control-btn.primary {
-  background: linear-gradient(135deg, var(--accent-color) 0%, rgba(102, 166, 255, 0.8) 100%);
-  color: #fff;
-  box-shadow: 0 4px 16px rgba(102, 166, 255, 0.3);
-}
-
-.lap-control-btn.primary:hover {
-  background: linear-gradient(135deg, rgba(102, 166, 255, 0.9) 0%, var(--accent-color) 100%);
-  transform: translateY(-2px);
-  box-shadow: 0 8px 32px rgba(102, 166, 255, 0.4);
-}
-
-.lap-control-btn.secondary {
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  color: #fff;
-}
-
-.lap-control-btn.secondary:hover {
-  background: rgba(255, 255, 255, 0.2);
-  border-color: rgba(255, 255, 255, 0.3);
-  transform: translateY(-2px);
-}
-
-.lap-control-btn.danger {
-  background: linear-gradient(135deg, rgba(255, 100, 100, 0.2) 0%, rgba(255, 100, 100, 0.1) 100%);
-  border: 1px solid rgba(255, 100, 100, 0.3);
-  color: #fff;
-}
-
-.lap-control-btn.danger:hover {
-  background: linear-gradient(135deg, rgba(255, 100, 100, 0.4) 0%, rgba(255, 100, 100, 0.2) 100%);
-  border-color: rgba(255, 100, 100, 0.5);
-  transform: translateY(-2px);
-  box-shadow: 0 8px 32px rgba(255, 100, 100, 0.3);
-}
-
-.laps-search-box {
-  margin-left: auto;
-  position: relative;
-  min-width: 200px;
-}
-
-.lap-search-input {
-  width: 100%;
-  padding: 0.9rem 1.2rem 0.9rem 3rem;
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 1.2rem;
-  color: #fff;
-  font-family: "Inter", sans-serif;
-  font-size: 0.9rem;
-  transition: all 0.3s ease;
-  backdrop-filter: blur(10px);
-}
-
-.lap-search-input:focus {
-  outline: none;
-  background: rgba(255, 255, 255, 0.15);
-  border-color: var(--accent-color);
-  box-shadow: 0 0 0 3px rgba(102, 166, 255, 0.2);
-}
-
-.lap-search-input::placeholder {
-  color: rgba(255, 255, 255, 0.5);
-}
-
-.search-icon {
-  position: absolute;
-  left: 1rem;
-  top: 50%;
-  transform: translateY(-50%);
-  color: rgba(255, 255, 255, 0.6);
-  pointer-events: none;
-}
-
-.laps-content-area {
-  padding: 0;
-}
-
-.laps-table-header {
-  display: grid;
-  grid-template-columns: 60px 1fr 1fr 1fr 120px;
-  gap: 1rem;
-  padding: 1.5rem 2.5rem;
-  background: rgba(255, 255, 255, 0.08);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
-  font-family: "Inter", sans-serif;
-  font-size: 0.85rem;
-  font-weight: 600;
-  color: rgba(255, 255, 255, 0.8);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-.lap-col {
-  display: flex;
-  align-items: center;
-}
-
-.lap-col.lap-number { justify-content: center; }
-.lap-col.lap-actions { justify-content: center; }
-
-.laps-list-mega {
-  min-height: 300px;
-  max-height: 60vh;
-  overflow-y: auto;
-  scroll-behavior: smooth;
+/* Custom scrollbar for laps list */
+.scrollbar-thin {
   scrollbar-width: thin;
-  scrollbar-color: rgba(102, 166, 255, 0.6) rgba(255, 255, 255, 0.1);
 }
 
-.lap-row {
-  display: grid;
-  grid-template-columns: 60px 1fr 1fr 1fr 120px;
-  gap: 1rem;
-  padding: 1.2rem 2.5rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-  transition: all 0.3s ease;
-  font-family: "Inter", sans-serif;
-  color: #fff;
-  animation: slideInRight 0.4s ease-out;
+.scrollbar-track-white\/5::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
 }
 
-.lap-row:hover {
-  background: rgba(255, 255, 255, 0.08);
-  border-left: 4px solid var(--accent-color);
-  padding-left: calc(2.5rem - 4px);
-}
-
-.lap-number {
-  font-weight: 700;
-  color: var(--accent-color);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.1rem;
-}
-
-.lap-time, .lap-total {
-  font-family: "Space Grotesk", monospace;
-  font-size: 1.05rem;
-  font-weight: 600;
-  display: flex;
-  align-items: center;
-}
-
-.lap-diff {
-  display: flex;
-  align-items: center;
-  font-size: 0.9rem;
-  font-weight: 500;
-}
-
-.lap-diff.faster { color: #4CAF50; }
-.lap-diff.slower { color: #FF6B6B; }
-.lap-diff.same { color: rgba(255, 255, 255, 0.6); }
-
-.lap-row-actions {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-}
-
-.lap-action-btn {
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  color: #fff;
-  width: 32px;
-  height: 32px;
-  border-radius: 8px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.lap-action-btn:hover {
+.scrollbar-thumb-white\/20::-webkit-scrollbar-thumb {
   background: rgba(255, 255, 255, 0.2);
-  border-color: rgba(255, 255, 255, 0.3);
-  transform: scale(1.05);
+  border-radius: 6px;
 }
 
-.no-laps-message {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 4rem 2rem;
-  text-align: center;
-  color: rgba(255, 255, 255, 0.7);
+.scrollbar-thumb-white\/20::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
 }
 
-.no-laps-icon {
-  font-size: 4rem;
-  margin-bottom: 1.5rem;
-  opacity: 0.7;
-  animation: bounce 2s ease-in-out infinite;
+::-webkit-scrollbar {
+  width: 6px;
 }
 
-@keyframes bounce {
-  0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
-  40% { transform: translateY(-10px); }
-  60% { transform: translateY(-5px); }
+::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 6px;
 }
 
-.no-laps-message h3 {
-  font-family: "Space Grotesk", sans-serif;
-  font-size: 1.8rem;
-  font-weight: 700;
-  margin: 0 0 1rem 0;
-  color: #fff;
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 6px;
 }
 
-.no-laps-message p {
-  font-family: "Inter", sans-serif;
-  font-size: 1rem;
-  line-height: 1.6;
-  margin: 0;
-  max-width: 400px;
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
 }
 
-@keyframes slideInRight {
+/* Smooth animations for lap items */
+@keyframes slideInUp {
   from {
     opacity: 0;
-    transform: translateX(30px);
+    transform: translateY(10px);
   }
   to {
     opacity: 1;
-    transform: translateX(0);
+    transform: translateY(0);
   }
 }
 
-/* Mobile Responsiveness for Mega Laps */
-@media (max-width: 768px) {
-  .laps-mega-container {
-    margin: 2rem 0;
-    border-radius: 1.5rem;
-  }
-  
-  .laps-hero-header {
-    padding: 2rem 1.5rem 1.5rem 1.5rem;
-  }
-  
-  .laps-main-title {
-    font-size: 2rem;
-  }
-  
-  .laps-stats-row {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 1rem;
-  }
-  
-  .lap-stat-item {
-    padding: 1rem;
-  }
-  
-  .lap-stat-value {
-    font-size: 1.3rem;
-  }
-  
-  .laps-controls-bar {
-    padding: 1rem 1.5rem;
-    flex-direction: column;
-    align-items: stretch;
-    gap: 1rem;
-  }
-  
-  .lap-control-btn {
-    justify-content: center;
-  }
-  
-  .laps-search-box {
-    margin-left: 0;
-    min-width: auto;
-  }
-  
-  .laps-table-header {
-    grid-template-columns: 50px 1fr 80px;
-    padding: 1rem 1.5rem;
-    font-size: 0.8rem;
-  }
-  
-  .lap-col.lap-total,
-  .lap-col.lap-diff { display: none; }
-  
-  .lap-row {
-    grid-template-columns: 50px 1fr 80px;
-    padding: 1rem 1.5rem;
-  }
-  
-  .lap-total,
-  .lap-diff { display: none; }
-}
-
-@media (max-width: 480px) {
-  .laps-stats-row {
-    grid-template-columns: 1fr;
-  }
-  
-  .laps-main-title {
-    font-size: 1.6rem;
-  }
-  
-  .laps-icon-large {
-    font-size: 2.5rem;
-  }
+.animate-slide-in {
+  animation: slideInUp 0.3s ease-out;
 }

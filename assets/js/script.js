@@ -243,8 +243,8 @@ class QuotesManager {
     // Multiple reliable APIs for quotes
     this.apis = [
       {
-        url: "https://api.quotable.io/random?minLength=50&maxLength=150",
-        parser: (data) => ({ text: data.content, author: data.author })
+        url: "https://thequoteshub.com/api/random-quote?format=json",
+        parser: (data) => ({ text: text, author: author })
       },
       {
         url: "https://zenquotes.io/api/random",
@@ -252,7 +252,7 @@ class QuotesManager {
       },
       {
         url: "https://api.adviceslip.com/advice",
-        parser: (data) => data.slip ? { text: data.slip.advice, author: "Chinmay" } : null
+        parser: (data) => data.slip ? { text: data.slip.advice, author: "" } : null
       }
     ];
     this.currentApiIndex = 0;
@@ -888,8 +888,7 @@ class Stopwatch {
       this.lapsList.innerHTML = "";
     }
     if (this.lapsContainer) {
-      this.lapsContainer.style.display = "none";
-      this.lapsContainer.classList.remove("show");
+      this.lapsContainer.classList.add("hidden");
     }
     if (this.timeDisplay) this.timeDisplay.classList.remove("running");
     this.playSound("reset");
@@ -1024,14 +1023,14 @@ class Stopwatch {
 
     if (this.laps.length === 0) {
       if (this.lapsContainer) {
-        this.lapsContainer.style.display = "none";
+        this.lapsContainer.classList.add("hidden");
       }
       if (this.lapsList) {
         this.lapsList.innerHTML = `
-          <div class="no-laps-message">
-            <div class="no-laps-icon">🏁</div>
-            <h3>No lap times yet</h3>
-            <p>Start the stopwatch and press the lap button to record your first lap time!</p>
+          <div class="text-center py-8 text-white/60">
+            <div class="text-4xl mb-3">🏁</div>
+            <p class="font-inter">No lap times yet</p>
+            <p class="text-sm text-white/40">Start timing and press lap to begin!</p>
           </div>
         `;
       }
@@ -1039,14 +1038,14 @@ class Stopwatch {
     }
 
     if (this.lapsContainer) {
-      this.lapsContainer.style.display = "block";
+      this.lapsContainer.classList.remove("hidden");
     }
     if (!this.lapsList) return;
 
     // Efficient rendering: if appending, only render latest item to top
     if (appendOnly && this.laps.length > 0) {
       // Remove no-laps message if present
-      const noLapsMsg = this.lapsList.querySelector('.no-laps-message');
+      const noLapsMsg = this.lapsList.querySelector('.text-center');
       if (noLapsMsg) {
         this.lapsList.innerHTML = '';
       }
@@ -1111,7 +1110,7 @@ class Stopwatch {
 
   _renderMegaLap(lap, originalIndex) {
     const lapRow = document.createElement("div");
-    lapRow.className = "lap-row";
+    lapRow.className = "flex items-center justify-between p-3 bg-white/5 hover:bg-white/10 rounded-lg border border-white/10 hover:border-white/20 transition-all duration-200 group animate-slide-in";
 
     // Calculate segment time
     const segmentTime = originalIndex === 0 
@@ -1119,7 +1118,7 @@ class Stopwatch {
       : lap.time - this.laps[originalIndex - 1].time;
 
     // Determine diff against previous segment
-    let diffClass = "same";
+    let diffClass = "text-white/60";
     let diffText = "--";
     if (originalIndex > 0) {
       const prevSegTime = originalIndex === 1 
@@ -1128,10 +1127,10 @@ class Stopwatch {
       
       const delta = segmentTime - prevSegTime;
       if (delta < -50) { // More than 50ms faster
-        diffClass = "faster";
+        diffClass = "text-green-400";
         diffText = `-${this.formatTimeDifference(-delta)}`;
       } else if (delta > 50) { // More than 50ms slower
-        diffClass = "slower";
+        diffClass = "text-red-400";
         diffText = `+${this.formatTimeDifference(delta)}`;
       } else {
         diffText = "±0.0s";
@@ -1139,27 +1138,25 @@ class Stopwatch {
     }
 
     lapRow.innerHTML = `
-      <div class="lap-col lap-number">
-        <span class="lap-number">${lap.number}</span>
-      </div>
-      <div class="lap-col lap-time">${this.formatTime(segmentTime)}</div>
-      <div class="lap-col lap-total">${this.formatTime(lap.time)}</div>
-      <div class="lap-col lap-diff ${diffClass}">${diffText}</div>
-      <div class="lap-col lap-actions">
-        <div class="lap-row-actions">
-          <button class="lap-action-btn" title="Copy lap time" onclick="navigator.clipboard?.writeText('Lap ${lap.number}: ${this.formatTime(segmentTime)}')">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-            </svg>
-          </button>
-          <button class="lap-action-btn" title="Delete lap" onclick="this.closest('.lap-row').style.display='none'">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <polyline points="3 6 5 6 21 6"></polyline>
-              <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path>
-            </svg>
-          </button>
+      <div class="flex items-center gap-4 flex-1">
+        <div class="flex items-center justify-center w-8 h-8 bg-primary/20 text-primary rounded-full text-sm font-bold">
+          ${lap.number}
         </div>
+        <div class="flex-1">
+          <div class="text-white font-space font-semibold">${this.formatTime(segmentTime)}</div>
+          <div class="text-xs text-white/50 font-inter">Total: ${this.formatTime(lap.time)}</div>
+        </div>
+      </div>
+      <div class="flex items-center gap-3">
+        <div class="text-sm font-inter ${diffClass} hidden sm:block">${diffText}</div>
+        <button class="p-1.5 hover:bg-white/10 rounded-md transition-colors opacity-0 group-hover:opacity-100" 
+                title="Copy lap time" 
+                onclick="navigator.clipboard?.writeText('Lap ${lap.number}: ${this.formatTime(segmentTime)}')">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-white/60 hover:text-white">
+            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+          </svg>
+        </button>
       </div>
     `;
     return lapRow;
@@ -1671,17 +1668,13 @@ document.addEventListener("DOMContentLoaded", () => {
   const lapSearch = document.getElementById("lapSearch");
   lapSearch?.addEventListener("input", (e) => {
     const searchTerm = e.target.value.toLowerCase();
-    const lapRows = document.querySelectorAll('.lap-row');
+    const lapRows = document.querySelectorAll('#lapsList > div:not(.text-center)');
     
     lapRows.forEach(row => {
-      const lapNumber = row.querySelector('.lap-number')?.textContent || '';
-      const lapTime = row.querySelector('.lap-time')?.textContent || '';
-      const lapTotal = row.querySelector('.lap-total')?.textContent || '';
+      const text = row.textContent.toLowerCase();
       
-      const searchContent = `${lapNumber} ${lapTime} ${lapTotal}`.toLowerCase();
-      
-      if (searchContent.includes(searchTerm)) {
-        row.style.display = 'grid';
+      if (text.includes(searchTerm)) {
+        row.style.display = 'flex';
       } else {
         row.style.display = 'none';
       }
