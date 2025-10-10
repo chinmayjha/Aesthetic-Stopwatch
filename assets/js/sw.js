@@ -1,14 +1,15 @@
-const CACHE_NAME = 'stopwatch-v1.0.0';
+const CACHE_NAME = 'aesthetic-stopwatch-v1.1.0';
 const STATIC_ASSETS = [
   '/',
   '/index.html',
   '/assets/css/styles.css',
   '/assets/js/script.js',
+  '/assets/js/sw.js',
   '/assets/icons/favicon.svg',
-  '/assets/icons/favicon-16.png',
-  '/assets/icons/favicon-32.png',
-  '/assets/icons/favicon-48.png',
-  '/config/manifest.json'
+  '/assets/icons/favicon.png',
+  '/config/manifest.json',
+  // Font preloading
+  'https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap'
 ];
 
 // Install event - cache static assets

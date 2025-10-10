@@ -4,22 +4,32 @@
   "description": "A beautiful, minimal, glassmorphic stopwatch for timing, productivity, and workouts",
   "start_url": "/",
   "display": "standalone",
+  "display_override": ["window-controls-overlay", "standalone", "minimal-ui"],
   "background_color": "#1a1a2e",
   "theme_color": "#66a6ff",
-  "orientation": "portrait-primary",
+  "orientation": "any",
   "categories": ["productivity", "utilities", "tools"],
   "lang": "en",
+  "scope": "/",
+  "prefer_related_applications": false,
   "icons": [
     {
       "src": "./assets/icons/favicon.png",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./assets/icons/favicon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
     },
     {
       "src": "./assets/icons/favicon.svg",
       "sizes": "any",
       "type": "image/svg+xml",
-      "purpose": "any maskable"
+      "purpose": "any"
     }
   ],
   "shortcuts": [

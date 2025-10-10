@@ -19,12 +19,22 @@
  */
 
 // ================================================================================================
-// PWA SERVICE WORKER REGISTRATION
+// PWA SERVICE WORKER REGISTRATION & INSTALL PROMPT
 // ================================================================================================
+let deferredPrompt;
+
+// Listen for install prompt
+window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    showInstallButton();
+});
+
+// Service Worker Registration
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', async () => {
         try {
-            const registration = await navigator.serviceWorker.register('/assets/js/sw.js');
+            const registration = await navigator.serviceWorker.register('./assets/js/sw.js');
             console.log('Service Worker registered successfully:', registration.scope);
             
             // Check for updates
@@ -33,7 +43,7 @@ if ('serviceWorker' in navigator) {
                 newWorker.addEventListener('statechange', () => {
                     if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
                         console.log('New content available, refresh for updates');
-                        // Could show update notification here
+                        showUpdateNotification();
                     }
                 });
             });
@@ -41,6 +51,64 @@ if ('serviceWorker' in navigator) {
             console.log('Service Worker registration failed:', error);
         }
     });
+}
+
+// Show install button
+function showInstallButton() {
+    const installBtn = document.createElement('button');
+    installBtn.className = 'install-btn';
+    installBtn.innerHTML = `
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+            <polyline points="7 10 12 15 17 10"/>
+            <line x1="12" y1="15" x2="12" y2="3"/>
+        </svg>
+        Install App
+    `;
+    installBtn.addEventListener('click', handleInstallClick);
+    
+    // Add to navbar or fab group
+    const navbar = document.querySelector('.navbar-content');
+    if (navbar) {
+        installBtn.classList.add('install-btn-navbar');
+        navbar.appendChild(installBtn);
+    }
+}
+
+// Handle install click
+async function handleInstallClick() {
+    if (deferredPrompt) {
+        deferredPrompt.prompt();
+        const { outcome } = await deferredPrompt.userChoice;
+        console.log(`User response to the install prompt: ${outcome}`);
+        deferredPrompt = null;
+        hideInstallButton();
+    }
+}
+
+// Hide install button
+function hideInstallButton() {
+    const installBtn = document.querySelector('.install-btn');
+    if (installBtn) {
+        installBtn.remove();
+    }
+}
+
+// Show update notification
+function showUpdateNotification() {
+    const notification = document.createElement('div');
+    notification.className = 'update-notification';
+    notification.innerHTML = `
+        <div class="update-content">
+            <span>New version available!</span>
+            <button onclick="window.location.reload()">Update</button>
+        </div>
+    `;
+    document.body.appendChild(notification);
+    
+    setTimeout(() => {
+        notification.classList.add('show');
+    }, 100);
 }
 
 // ================================================================================================
@@ -77,6 +145,163 @@ function debounce(func, wait) {
         clearTimeout(timeout);
         timeout = setTimeout(later, wait);
     };
+}
+
+// ================================================================================================
+// MOTIVATIONAL QUOTES API
+// ================================================================================================
+class QuotesManager {
+    constructor() {
+        this.quotes = [
+            { text: "The way to get started is to quit talking and begin doing.", author: "Walt Disney" },
+            { text: "Don't let yesterday take up too much of today.", author: "Will Rogers" },
+            { text: "You learn more from failure than from success.", author: "Anonymous" },
+            { text: "It's not whether you get knocked down, it's whether you get up.", author: "Vince Lombardi" },
+            { text: "If you are working on something that you really care about, you don't have to be pushed.", author: "Steve Jobs" },
+            { text: "Success is not final, failure is not fatal: it is the courage to continue that counts.", author: "Winston Churchill" },
+            { text: "The future belongs to those who believe in the beauty of their dreams.", author: "Eleanor Roosevelt" },
+            { text: "Your time is limited, don't waste it living someone else's life.", author: "Steve Jobs" },
+            { text: "The only impossible journey is the one you never begin.", author: "Tony Robbins" },
+            { text: "Believe you can and you're halfway there.", author: "Theodore Roosevelt" },
+            { text: "Don't watch the clock; do what it does. Keep going.", author: "Sam Levenson" },
+            { text: "The expert in anything was once a beginner.", author: "Helen Hayes" },
+            { text: "Progress, not perfection, is the goal.", author: "Anonymous" },
+            { text: "Every moment is a fresh beginning.", author: "T.S. Eliot" },
+            { text: "Focus on being productive instead of busy.", author: "Tim Ferriss" }
+        ];
+        this.currentQuoteIndex = 0;
+        this.apiUrl = 'https://api.quotegarden.io/api/v3/quotes/random';
+        this.fallbackApiUrl = 'https://zenquotes.io/api/random';
+        this.init();
+    }
+
+    init() {
+        this.loadQuote();
+        this.bindEvents();
+        
+        // Auto-refresh quote every 10 minutes
+        setInterval(() => {
+            this.loadQuote();
+        }, 600000);
+    }
+
+    bindEvents() {
+        const newQuoteBtn = document.getElementById('newQuoteBtn');
+        if (newQuoteBtn) {
+            newQuoteBtn.addEventListener('click', () => this.loadQuote());
+        }
+    }
+
+    async loadQuote() {
+        const quoteText = document.getElementById('quoteText');
+        const quoteAuthor = document.getElementById('quoteAuthor');
+        
+        if (!quoteText || !quoteAuthor) return;
+
+        try {
+            // Try primary API first
+            const quote = await this.fetchFromAPI();
+            if (quote) {
+                this.displayQuote(quote.text, quote.author);
+                return;
+            }
+        } catch (error) {
+            console.log('Primary API failed, trying fallback...');
+        }
+
+        try {
+            // Try fallback API
+            const quote = await this.fetchFromFallbackAPI();
+            if (quote) {
+                this.displayQuote(quote.text, quote.author);
+                return;
+            }
+        } catch (error) {
+            console.log('Fallback API failed, using local quotes...');
+        }
+
+        // Use local quotes as final fallback
+        this.displayLocalQuote();
+    }
+
+    async fetchFromAPI() {
+        try {
+            const response = await fetch(this.apiUrl);
+            if (!response.ok) throw new Error('API Error');
+            
+            const data = await response.json();
+            if (data.statusCode === 200 && data.data) {
+                return {
+                    text: data.data.quoteText,
+                    author: data.data.quoteAuthor
+                };
+            }
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    async fetchFromFallbackAPI() {
+        try {
+            const response = await fetch(this.fallbackApiUrl);
+            if (!response.ok) throw new Error('Fallback API Error');
+            
+            const data = await response.json();
+            if (data && data[0]) {
+                return {
+                    text: data[0].q,
+                    author: data[0].a
+                };
+            }
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    displayLocalQuote() {
+        const quote = this.quotes[this.currentQuoteIndex];
+        this.displayQuote(quote.text, quote.author);
+        this.currentQuoteIndex = (this.currentQuoteIndex + 1) % this.quotes.length;
+    }
+
+    displayQuote(text, author) {
+        const quoteText = document.getElementById('quoteText');
+        const quoteAuthor = document.getElementById('quoteAuthor');
+        
+        // Clean up text
+        const cleanText = text.replace(/["'"]/g, '').trim();
+        const cleanAuthor = author || 'Anonymous';
+
+        // Add fade effect
+        quoteText.style.opacity = '0';
+        quoteAuthor.style.opacity = '0';
+        
+        setTimeout(() => {
+            quoteText.textContent = cleanText;
+            quoteAuthor.textContent = `- ${cleanAuthor}`;
+            
+            quoteText.style.opacity = '1';
+            quoteAuthor.style.opacity = '1';
+        }, 200);
+    }
+
+    // Method to get quote based on context (studying, working, etc.)
+    getContextualQuote(context = 'general') {
+        const contextQuotes = {
+            studying: [
+                { text: "Education is the most powerful weapon which you can use to change the world.", author: "Nelson Mandela" },
+                { text: "The expert in anything was once a beginner.", author: "Helen Hayes" },
+                { text: "Learning never exhausts the mind.", author: "Leonardo da Vinci" }
+            ],
+            working: [
+                { text: "Choose a job you love, and you will never have to work a day in your life.", author: "Confucius" },
+                { text: "The way to get started is to quit talking and begin doing.", author: "Walt Disney" },
+                { text: "Focus on being productive instead of busy.", author: "Tim Ferriss" }
+            ]
+        };
+        
+        return contextQuotes[context] || this.quotes;
+    }
 }
 
 // ================================================================================================
@@ -1374,3 +1599,16 @@ if ('getBattery' in navigator) {
         });
     });
 }
+
+// ================================================================================================
+// INITIALIZE QUOTES MANAGER
+// ================================================================================================
+document.addEventListener('DOMContentLoaded', () => {
+    // Initialize quotes manager
+    window.quotesManager = new QuotesManager();
+    
+    // Load first quote with slight delay for better UX
+    setTimeout(() => {
+        window.quotesManager.loadQuote();
+    }, 1500);
+});
