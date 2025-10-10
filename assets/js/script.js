@@ -1010,6 +1010,10 @@ class Stopwatch {
   }
 
   bindEvents() {
+    // Prevent duplicate event listeners
+    if (this._eventsbound) return;
+    this._eventsbound = true;
+
     // Stopwatch controls
     this.startPauseBtn?.addEventListener("click", () => this.toggleStopwatch());
     this.lapBtn?.addEventListener("click", () => this.addLap());
@@ -1335,10 +1339,11 @@ class Stopwatch {
   _renderMegaLapLi(lap, originalIndex) {
     // <li> for semantic, role, and accessibility
     const li = document.createElement('li');
-    li.className = "flex items-center justify-between p-3 bg-white/5 hover:bg-white/10 rounded-lg border border-white/10 hover:border-white/20 transition-all duration-200 group animate-slide-in";
+    li.className = "lap-row";
     li.setAttribute('role', 'listitem');
     li.setAttribute('tabindex', '-1');
     li.setAttribute('data-lap-index', originalIndex);
+    
     // Calculate segment time once for ARIA and logic
     let segmentTime = lap.time;
     if (originalIndex > 0 && this.laps[originalIndex - 1]) {
@@ -1346,64 +1351,34 @@ class Stopwatch {
     }
     li.setAttribute('aria-label', `Lap ${lap.number}, segment ${this.formatTime(segmentTime)}, total ${this.formatTime(lap.time)}`);
 
-    // ...segmentTime already calculated above...
-
-    // Difference calculation with bounds check
-    let diffClass = "text-white/60";
-    let diffText = "--";
-    if (originalIndex > 0 && this.laps[originalIndex - 1]) {
-      let prevSegTime = this.laps[originalIndex - 1].time;
-      if (originalIndex > 1 && this.laps[originalIndex - 2]) {
-        prevSegTime = this.laps[originalIndex - 1].time - this.laps[originalIndex - 2].time;
-      }
-      const delta = segmentTime - prevSegTime;
-      // Use a 50ms threshold, but could be made configurable
-      if (delta < -50) {
-        diffClass = "text-green-400";
-        diffText = `-${this.formatTimeDifference(-delta)}`;
-      } else if (delta > 50) {
-        diffClass = "text-red-400";
-        diffText = `+${this.formatTimeDifference(delta)}`;
-      } else {
-        diffText = "±0.0s";
-      }
-    }
-
-    // Build DOM safely (no innerHTML for user data)
-    const left = document.createElement('div');
-    left.className = 'flex items-center gap-4 flex-1';
+    // Build lap number element
     const num = document.createElement('div');
-    num.className = 'flex items-center justify-center w-8 h-8 bg-primary/20 text-primary rounded-full text-sm font-bold';
+    num.className = 'lap-num';
     num.textContent = lap.number;
-    const mid = document.createElement('div');
-    mid.className = 'flex-1';
-    const seg = document.createElement('div');
-    seg.className = 'text-white font-space font-semibold';
-    seg.textContent = this.formatTime(segmentTime);
-    const tot = document.createElement('div');
-    tot.className = 'text-xs text-white/50 font-inter';
-    tot.textContent = `Total: ${this.formatTime(lap.time)}`;
-    mid.appendChild(seg);
-    mid.appendChild(tot);
-    left.appendChild(num);
-    left.appendChild(mid);
 
-    const right = document.createElement('div');
-    right.className = 'flex items-center gap-3';
-    const diff = document.createElement('div');
-    diff.className = `text-sm font-inter ${diffClass} hidden sm:block`;
-    diff.textContent = diffText;
-    right.appendChild(diff);
+    // Build segment time element
+    const seg = document.createElement('div');
+    seg.className = 'lap-segment';
+    seg.textContent = this.formatTime(segmentTime);
+
+    // Build total time element
+    const tot = document.createElement('div');
+    tot.className = 'lap-total';
+    tot.textContent = `Total: ${this.formatTime(lap.time)}`;
+
+    // Build copy button
     const copyBtn = document.createElement('button');
-    copyBtn.className = 'p-1.5 hover:bg-white/10 rounded-md transition-colors opacity-0 group-hover:opacity-100 lap-copy-btn';
+    copyBtn.className = 'lap-copy-btn';
     copyBtn.setAttribute('type', 'button');
     copyBtn.setAttribute('title', 'Copy lap time');
     copyBtn.setAttribute('aria-label', `Copy Lap ${lap.number} time`);
-    copyBtn.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-white/60 hover:text-white"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>`;
-    right.appendChild(copyBtn);
+    copyBtn.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>`;
 
-    li.appendChild(left);
-    li.appendChild(right);
+    li.appendChild(num);
+    li.appendChild(seg);
+    li.appendChild(tot);
+    li.appendChild(copyBtn);
+    
     return li;
   }
 
