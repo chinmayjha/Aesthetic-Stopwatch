@@ -17,39 +17,32 @@
 
 ## ✨ Features
 
-<table>
-<tr>
-<td>
+### 🎨 **Design & Experience**
+- **Glassmorphic UI** – Modern blur, transparency, and beautiful gradients
+- **Responsive Design** – Mobile-first, optimized for phones, tablets (landscape/portrait), and desktops
+- **Custom Backgrounds** – Upload your own images or use presets
+- **Modern Share Modal** – Redesigned, with social and copy options
+- **Smooth Animations** – 60fps performance
 
-### 🎨 **Design Excellence**
-- **Glassmorphic UI** - Modern blur effects and transparency
-- **Default Dark Theme** - Dark by default (Light/Auto available)
-- **Custom Backgrounds** - Upload your own images
-- **Responsive Design** - Perfect on all devices
-- **Smooth Animations** - 60fps performance
+### ⚡ **Performance & PWA**
+- **PWA Support** – Install as a native app
+- **Offline Ready** – Works without internet
+- **Battery Optimization** – Smart power management
+- **Keyboard Shortcuts** – Fast navigation
+- **Audio & Haptics** – Rich feedback
 
-</td>
-<td>
-
-### ⚡ **Performance Features**
-- **PWA Support** - Install as native app
-- **Offline Ready** - Works without internet
-- **Battery Optimization** - Smart power management
-- **Keyboard Shortcuts** - Fast navigation
-- **Audio & Haptics** - Rich feedback
-
-</td>
-</tr>
-</table>
+### 💡 **Motivational Quotes**
+- **Live Quotes** – Fetches motivational quotes from a live API (with fallback)
+- **Hide/Show Quotes** – Toggle motivational quotes in the settings panel (Display Options)
 
 ### 🎯 **Core Functionality**
-- ⏱️ **Precision Timing** - Accurate to milliseconds
-- 🏁 **Lap Tracking** - Record and compare splits
-- 📤 **Lap Actions** - Copy to clipboard, export CSV, clear all
-- 🎵 **Sound Effects** - Customizable audio feedback
-- � **Haptic Feedback** - Tactile responses on mobile
-- ⌨️ **Keyboard Controls** - Space (start/stop), R (reset), L (lap)
-- 📱 **Share Results** - Easy sharing with one click
+- ⏱️ **Precision Timing** – Accurate to milliseconds
+- 🏁 **Lap Tracking** – Record and compare splits
+- 📤 **Lap Actions** – Copy to clipboard, export CSV, clear all
+- 🎵 **Sound Effects** – Customizable audio feedback
+- 📳 **Haptic Feedback** – Tactile responses on mobile
+- ⌨️ **Keyboard Controls** – Space (start/stop), R (reset), L (lap)
+- 📱 **Share Results** – Easy sharing with one click
 
 ---
 

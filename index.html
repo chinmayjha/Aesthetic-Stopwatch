@@ -6,11 +6,14 @@
     <title id="pageTitle">00:00 | Aesthetic Stopwatch | Chinmay</title>
     
     <!-- SEO Meta Tags -->
-    <meta name="description" content="Aesthetic Stopwatch by Chinmay – a beautiful, minimal, glassmorphic stopwatch for timing, productivity, and workouts. Features lap tracking, themes, and modern UI.">
-    <meta name="keywords" content="stopwatch, timer, glassmorphic, aesthetic, minimal, productivity, lap, modern, Chinmay">
+    <meta name="description" content="Free aesthetic glassmorphic stopwatch with lap tracking, motivational quotes, and modern UI. Perfect for productivity, workouts, and time management. Works offline as PWA.">
+    <meta name="keywords" content="stopwatch, timer, glassmorphic, aesthetic, minimal, productivity, lap tracking, motivational quotes, PWA, offline, workout timer, pomodoro, time management">
     <meta name="author" content="Chinmay">
-    <meta name="robots" content="index, follow">
+    <meta name="robots" content="index, follow, max-image-preview:large">
     <meta name="theme-color" content="#66a6ff">
+    <meta name="color-scheme" content="dark light">
+    <meta name="generator" content="Chinmay - Aesthetic Stopwatch">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
     <meta name="msapplication-TileColor" content="#66a6ff">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -57,11 +60,17 @@
     <!-- Stylesheet -->
     <link rel="stylesheet" href="./assets/css/styles.css">
     
-    <!-- Resource Preloading for Performance -->
+    <!-- Critical Performance Optimizations -->
     <link rel="preload" href="./assets/css/styles.css" as="style">
     <link rel="preload" href="./assets/js/script.js" as="script">
     <link rel="dns-prefetch" href="https://fonts.googleapis.com">
     <link rel="dns-prefetch" href="https://fonts.gstatic.com">
+    <link rel="dns-prefetch" href="https://zenquotes.io">
+    <link rel="dns-prefetch" href="https://api.quotable.io">
+    <!-- Performance hints -->
+    <meta name="format-detection" content="telephone=no">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-touch-fullscreen" content="yes">
     
     <!-- Google Fonts with Optimizations -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -472,9 +481,9 @@
                     <div class="setting-label">Display Options</div>
                     <div class="toggle-group">
                         <label class="custom-toggle">
-                            <input type="checkbox" id="hideQuotesToggle">
+                            <input type="checkbox" id="showQuotesToggle" checked>
                             <span class="toggle-checkbox"></span>
-                            <span class="toggle-text">Hide Motivational Quotes</span>
+                            <span class="toggle-text">Show Motivational Quotes</span>
                         </label>
                     </div>
                 </div>

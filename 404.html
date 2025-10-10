@@ -1,346 +1,415 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover"
+    />
     <title>404 - Page Not Found | Aesthetic Stopwatch</title>
-    
+
     <!-- SEO Meta Tags -->
-    <meta name="description" content="Page not found - The page you're looking for doesn't exist on Aesthetic Stopwatch by Chinmay.">
-    <meta name="robots" content="noindex, nofollow">
-    <meta name="theme-color" content="#66a6ff">
-    
+    <meta
+      name="description"
+      content="Page not found - The page you're looking for doesn't exist on Aesthetic Stopwatch by Chinmay."
+    />
+    <meta name="robots" content="noindex, nofollow" />
+    <meta name="theme-color" content="#66a6ff" />
+
     <!-- Favicons -->
-    <link rel="icon" type="image/svg+xml" href="./assets/icons/favicon.svg">
-    <link rel="canonical" href="https://stopwatch.chinmayjha.tech/">
-    
+    <link rel="icon" type="image/svg+xml" href="./assets/icons/favicon.svg" />
+    <link rel="canonical" href="https://stopwatch.chinmayjha.tech/" />
+
     <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
 
-        :root {
-            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-            --glass-bg: rgba(255, 255, 255, 0.1);
-            --glass-border: rgba(255, 255, 255, 0.2);
-            --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
-            --text-primary: #ffffff;
-            --text-secondary: rgba(255, 255, 255, 0.8);
-            --accent-color: #66a6ff;
-        }
+      :root {
+        --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        --glass-bg: rgba(255, 255, 255, 0.1);
+        --glass-border: rgba(255, 255, 255, 0.2);
+        --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+        --text-primary: #ffffff;
+        --text-secondary: rgba(255, 255, 255, 0.8);
+        --accent-color: #66a6ff;
+      }
 
-        html {
-            overflow-x: hidden;
-            scrollbar-gutter: stable;
-        }
+      html {
+        overflow-x: hidden;
+        scrollbar-gutter: stable;
+      }
 
-        body {
-            font-family: 'Space Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: var(--primary-gradient);
-            min-height: 100vh;
-            color: var(--text-primary);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-            overflow-x: hidden;
-        }
+      body {
+        font-family: "Space Grotesk", -apple-system, BlinkMacSystemFont,
+          "Segoe UI", Roboto, sans-serif;
+        background: var(--primary-gradient);
+        min-height: 100vh;
+        color: var(--text-primary);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        overflow-x: hidden;
+      }
 
-        body::before {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: 
-                radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
-                radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.3) 0%, transparent 50%);
-            pointer-events: none;
-            z-index: -1;
-        }
+      body::before {
+        content: "";
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: radial-gradient(
+            circle at 20% 80%,
+            rgba(120, 119, 198, 0.3) 0%,
+            transparent 50%
+          ),
+          radial-gradient(
+            circle at 80% 20%,
+            rgba(255, 119, 198, 0.3) 0%,
+            transparent 50%
+          );
+        pointer-events: none;
+        z-index: -1;
+      }
 
+      .error-container {
+        text-align: center;
+        max-width: 600px;
+        padding: 2rem;
+        backdrop-filter: blur(20px);
+        background: var(--glass-bg);
+        border-radius: 24px;
+        border: 1px solid var(--glass-border);
+        box-shadow: var(--glass-shadow);
+        animation: fadeInUp 0.8s ease-out;
+      }
+
+      @keyframes fadeInUp {
+        from {
+          opacity: 0;
+          transform: translateY(30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .error-number {
+        font-size: clamp(4rem, 12vw, 8rem);
+        font-weight: 700;
+        background: linear-gradient(135deg, #66a6ff, #f093fb);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        line-height: 1;
+        margin-bottom: 1rem;
+        text-shadow: 0 0 30px rgba(102, 166, 255, 0.3);
+      }
+
+      .error-title {
+        font-size: clamp(1.5rem, 4vw, 2.5rem);
+        font-weight: 600;
+        margin-bottom: 1rem;
+        color: var(--text-primary);
+      }
+
+      .error-description {
+        font-size: 1.1rem;
+        color: var(--text-secondary);
+        margin-bottom: 2rem;
+        line-height: 1.6;
+      }
+
+      .action-buttons {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        flex-wrap: wrap;
+        margin-bottom: 2rem;
+      }
+
+      .btn {
+        padding: 1rem 2rem;
+        border-radius: 16px;
+        border: none;
+        font-family: inherit;
+        font-weight: 600;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .btn::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(255, 255, 255, 0.2),
+          transparent
+        );
+        transition: left 0.5s;
+      }
+
+      .btn:hover::before {
+        left: 100%;
+      }
+
+      .btn-primary {
+        background: linear-gradient(135deg, #66a6ff, #4285f4);
+        color: white;
+        box-shadow: 0 4px 16px rgba(102, 166, 255, 0.3);
+      }
+
+      .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 24px rgba(102, 166, 255, 0.4);
+      }
+
+      .btn-secondary {
+        background: rgba(255, 255, 255, 0.1);
+        color: var(--text-primary);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        backdrop-filter: blur(10px);
+      }
+
+      .btn-secondary:hover {
+        background: rgba(255, 255, 255, 0.15);
+        transform: translateY(-2px);
+      }
+
+      .floating-timer {
+        position: absolute;
+        top: 2rem;
+        left: 2rem;
+        backdrop-filter: blur(20px);
+        background: var(--glass-bg);
+        border-radius: 16px;
+        border: 1px solid var(--glass-border);
+        padding: 1rem 1.5rem;
+        font-weight: 600;
+        animation: float 3s ease-in-out infinite;
+      }
+
+      @keyframes float {
+        0%,
+        100% {
+          transform: translateY(0px);
+        }
+        50% {
+          transform: translateY(-10px);
+        }
+      }
+
+      .background-elements {
+        position: fixed;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        pointer-events: none;
+        z-index: -1;
+      }
+
+      .bg-circle {
+        position: absolute;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.05);
+        animation: drift 20s ease-in-out infinite;
+      }
+
+      .bg-circle:nth-child(1) {
+        width: 200px;
+        height: 200px;
+        top: 10%;
+        left: 10%;
+        animation-delay: 0s;
+      }
+
+      .bg-circle:nth-child(2) {
+        width: 150px;
+        height: 150px;
+        top: 60%;
+        right: 10%;
+        animation-delay: -7s;
+      }
+
+      .bg-circle:nth-child(3) {
+        width: 100px;
+        height: 100px;
+        bottom: 20%;
+        left: 20%;
+        animation-delay: -14s;
+      }
+
+      @keyframes drift {
+        0%,
+        100% {
+          transform: translate(0, 0) rotate(0deg);
+        }
+        33% {
+          transform: translate(30px, -30px) rotate(120deg);
+        }
+        66% {
+          transform: translate(-20px, 20px) rotate(240deg);
+        }
+      }
+
+      @media (max-width: 600px) {
         .error-container {
-            text-align: center;
-            max-width: 600px;
-            padding: 2rem;
-            backdrop-filter: blur(20px);
-            background: var(--glass-bg);
-            border-radius: 24px;
-            border: 1px solid var(--glass-border);
-            box-shadow: var(--glass-shadow);
-            animation: fadeInUp 0.8s ease-out;
-        }
-
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .error-number {
-            font-size: clamp(4rem, 12vw, 8rem);
-            font-weight: 700;
-            background: linear-gradient(135deg, #66a6ff, #f093fb);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            line-height: 1;
-            margin-bottom: 1rem;
-            text-shadow: 0 0 30px rgba(102, 166, 255, 0.3);
-        }
-
-        .error-title {
-            font-size: clamp(1.5rem, 4vw, 2.5rem);
-            font-weight: 600;
-            margin-bottom: 1rem;
-            color: var(--text-primary);
-        }
-
-        .error-description {
-            font-size: 1.1rem;
-            color: var(--text-secondary);
-            margin-bottom: 2rem;
-            line-height: 1.6;
+          margin: 1rem;
+          padding: 1.5rem;
         }
 
         .action-buttons {
-            display: flex;
-            gap: 1rem;
-            justify-content: center;
-            flex-wrap: wrap;
-            margin-bottom: 2rem;
+          flex-direction: column;
+          align-items: center;
         }
 
         .btn {
-            padding: 1rem 2rem;
-            border-radius: 16px;
-            border: none;
-            font-family: inherit;
-            font-weight: 600;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .btn::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-            transition: left 0.5s;
-        }
-
-        .btn:hover::before {
-            left: 100%;
-        }
-
-        .btn-primary {
-            background: linear-gradient(135deg, #66a6ff, #4285f4);
-            color: white;
-            box-shadow: 0 4px 16px rgba(102, 166, 255, 0.3);
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 24px rgba(102, 166, 255, 0.4);
-        }
-
-        .btn-secondary {
-            background: rgba(255, 255, 255, 0.1);
-            color: var(--text-primary);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            backdrop-filter: blur(10px);
-        }
-
-        .btn-secondary:hover {
-            background: rgba(255, 255, 255, 0.15);
-            transform: translateY(-2px);
+          width: 100%;
+          max-width: 280px;
         }
 
         .floating-timer {
-            position: absolute;
-            top: 2rem;
-            left: 2rem;
-            backdrop-filter: blur(20px);
-            background: var(--glass-bg);
-            border-radius: 16px;
-            border: 1px solid var(--glass-border);
-            padding: 1rem 1.5rem;
-            font-weight: 600;
-            animation: float 3s ease-in-out infinite;
+          position: relative;
+          top: auto;
+          left: auto;
+          margin-bottom: 2rem;
+          align-self: center;
         }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-10px); }
-        }
-
-        .background-elements {
-            position: fixed;
-            width: 100%;
-            height: 100%;
-            top: 0;
-            left: 0;
-            pointer-events: none;
-            z-index: -1;
-        }
-
-        .bg-circle {
-            position: absolute;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.05);
-            animation: drift 20s ease-in-out infinite;
-        }
-
-        .bg-circle:nth-child(1) {
-            width: 200px;
-            height: 200px;
-            top: 10%;
-            left: 10%;
-            animation-delay: 0s;
-        }
-
-        .bg-circle:nth-child(2) {
-            width: 150px;
-            height: 150px;
-            top: 60%;
-            right: 10%;
-            animation-delay: -7s;
-        }
-
-        .bg-circle:nth-child(3) {
-            width: 100px;
-            height: 100px;
-            bottom: 20%;
-            left: 20%;
-            animation-delay: -14s;
-        }
-
-        @keyframes drift {
-            0%, 100% { transform: translate(0, 0) rotate(0deg); }
-            33% { transform: translate(30px, -30px) rotate(120deg); }
-            66% { transform: translate(-20px, 20px) rotate(240deg); }
-        }
-
-        @media (max-width: 600px) {
-            .error-container {
-                margin: 1rem;
-                padding: 1.5rem;
-            }
-
-            .action-buttons {
-                flex-direction: column;
-                align-items: center;
-            }
-
-            .btn {
-                width: 100%;
-                max-width: 280px;
-            }
-
-            .floating-timer {
-                position: relative;
-                top: auto;
-                left: auto;
-                margin-bottom: 2rem;
-                align-self: center;
-            }
-        }
+      }
     </style>
-</head>
+  </head>
 
-<body>
+  <body>
     <div class="background-elements">
-        <div class="bg-circle"></div>
-        <div class="bg-circle"></div>
-        <div class="bg-circle"></div>
+      <div class="bg-circle"></div>
+      <div class="bg-circle"></div>
+      <div class="bg-circle"></div>
     </div>
 
-    <div class="floating-timer">
-        ⏱️ 00:04:04
-    </div>
+    <div class="floating-timer">⏱️ 00:04:04</div>
 
     <main class="error-container">
-        <div class="error-number">404</div>
-        <h1 class="error-title">Page Not Found</h1>
-        <p class="error-description">
-            Oops! The page you're looking for seems to have vanished into the digital void. 
-            Don't worry though, our beautiful stopwatch is still ticking away perfectly!
-        </p>
-        
-        <div class="action-buttons">
-            <a href="/" class="btn btn-primary">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M3 9L12 2L21 9V20C21 20.5304 20.7893 21.0391 20.4142 21.4142C20.0391 21.7893 19.5304 22 19 22H5C4.46957 22 3.96086 21.7893 3.58579 21.4142C3.21071 21.0391 3 20.5304 3 20V9Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                    <path d="M9 22V12H15V22" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-                Back to Stopwatch
-            </a>
-            <button class="btn btn-secondary" onclick="history.back()">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M19 12H5M12 19L5 12L12 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-                Go Back
-            </button>
-        </div>
+      <div class="error-number">404</div>
+      <h1 class="error-title">Page Not Found</h1>
+      <p class="error-description">
+        Oops! The page you're looking for seems to have vanished into the
+        digital void. Don't worry though, our beautiful stopwatch is still
+        ticking away perfectly!
+      </p>
 
-        <p style="color: var(--text-secondary); font-size: 0.9rem; margin-top: 1rem;">
-            Lost? Try our beautiful stopwatch at 
-            <a href="/" style="color: var(--accent-color); text-decoration: none;">
-                stopwatch.chinmayjha.tech
-            </a>
-        </p>
+      <div class="action-buttons">
+        <a href="/" class="btn btn-primary">
+          <svg
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M3 9L12 2L21 9V20C21 20.5304 20.7893 21.0391 20.4142 21.4142C20.0391 21.7893 19.5304 22 19 22H5C4.46957 22 3.96086 21.7893 3.58579 21.4142C3.21071 21.0391 3 20.5304 3 20V9Z"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+            <path
+              d="M9 22V12H15V22"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+          Back to Stopwatch
+        </a>
+        <button class="btn btn-secondary" onclick="history.back()">
+          <svg
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M19 12H5M12 19L5 12L12 5"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+          Go Back
+        </button>
+      </div>
+
+      <p
+        style="
+          color: var(--text-secondary);
+          font-size: 0.9rem;
+          margin-top: 1rem;
+        "
+      >
+        Lost? Try our beautiful stopwatch at
+        <a href="/" style="color: var(--accent-color); text-decoration: none">
+          stopwatch.chinmayjha.tech
+        </a>
+      </p>
     </main>
 
     <script>
-        // Real-time clock display
-        const timer = document.querySelector('.floating-timer');
-        
-        function updateRealTime() {
-            const now = new Date();
-            const hours = now.getHours().toString().padStart(2, '0');
-            const minutes = now.getMinutes().toString().padStart(2, '0');
-            const seconds = now.getSeconds().toString().padStart(2, '0');
-            timer.textContent = `⏰ ${hours}:${minutes}:${seconds}`;
+      // Real-time clock display
+      const timer = document.querySelector(".floating-timer");
+
+      function updateRealTime() {
+        const now = new Date();
+        const hours = now.getHours().toString().padStart(2, "0");
+        const minutes = now.getMinutes().toString().padStart(2, "0");
+        const seconds = now.getSeconds().toString().padStart(2, "0");
+        timer.textContent = `⏰ ${hours}:${minutes}:${seconds}`;
+      }
+
+      // Update immediately and then every second
+      updateRealTime();
+      setInterval(updateRealTime, 1000);
+
+      // Add some interactive sparkle effect
+      document.addEventListener("mousemove", (e) => {
+        if (Math.random() > 0.95) {
+          createSparkle(e.clientX, e.clientY);
         }
-        
-        // Update immediately and then every second
-        updateRealTime();
-        setInterval(updateRealTime, 1000);
+      });
 
-        // Add some interactive sparkle effect
-        document.addEventListener('mousemove', (e) => {
-            if (Math.random() > 0.95) {
-                createSparkle(e.clientX, e.clientY);
-            }
-        });
-
-        function createSparkle(x, y) {
-            const sparkle = document.createElement('div');
-            sparkle.style.cssText = `
+      function createSparkle(x, y) {
+        const sparkle = document.createElement("div");
+        sparkle.style.cssText = `
                 position: fixed;
                 left: ${x}px;
                 top: ${y}px;
@@ -352,22 +421,22 @@
                 z-index: 1000;
                 animation: sparkleAnim 1s ease-out forwards;
             `;
-            
-            const style = document.createElement('style');
-            style.textContent = `
+
+        const style = document.createElement("style");
+        style.textContent = `
                 @keyframes sparkleAnim {
                     0% { opacity: 1; transform: scale(1) translateY(0); }
                     100% { opacity: 0; transform: scale(0) translateY(-20px); }
                 }
             `;
-            document.head.appendChild(style);
-            document.body.appendChild(sparkle);
-            
-            setTimeout(() => {
-                document.body.removeChild(sparkle);
-                document.head.removeChild(style);
-            }, 1000);
-        }
+        document.head.appendChild(style);
+        document.body.appendChild(sparkle);
+
+        setTimeout(() => {
+          document.body.removeChild(sparkle);
+          document.head.removeChild(style);
+        }, 1000);
+      }
     </script>
-</body>
+  </body>
 </html>
