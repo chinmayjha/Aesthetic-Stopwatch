@@ -148,20 +148,20 @@ function debounce(func, wait) {
 }
 
 // ================================================================================================
-// QUOTE TOGGLE BUTTON
+// QUOTE TOGGLE CHECKBOX (Display Options)
 // ================================================================================================
 document.addEventListener('DOMContentLoaded', () => {
     const quoteContainer = document.getElementById('quoteContainer');
-    const toggleQuoteBtn = document.getElementById('toggleQuoteBtn');
-    if (toggleQuoteBtn && quoteContainer) {
-        toggleQuoteBtn.addEventListener('click', () => {
-            if (quoteContainer.style.display === 'none') {
-                quoteContainer.style.display = '';
-                toggleQuoteBtn.textContent = 'Hide Quote';
-            } else {
-                quoteContainer.style.display = 'none';
-                toggleQuoteBtn.textContent = 'Show Quote';
-            }
+    const hideQuotesToggle = document.getElementById('hideQuotesToggle');
+    if (hideQuotesToggle && quoteContainer) {
+        // Restore state from localStorage
+        const hidden = localStorage.getItem('hideQuotes') === 'true';
+        hideQuotesToggle.checked = hidden;
+        quoteContainer.style.display = hidden ? 'none' : '';
+        hideQuotesToggle.addEventListener('change', () => {
+            const shouldHide = hideQuotesToggle.checked;
+            quoteContainer.style.display = shouldHide ? 'none' : '';
+            localStorage.setItem('hideQuotes', shouldHide);
         });
     }
 });
@@ -188,9 +188,9 @@ class QuotesManager {
             { text: "Focus on being productive instead of busy.", author: "Tim Ferriss" }
         ];
         this.currentQuoteIndex = 0;
-    // Use zenquotes.io as primary, quotable.io as fallback
+    // Use zenquotes.io as primary, thequoteshub.com as fallback
     this.apiUrl = 'https://zenquotes.io/api/random';
-    this.fallbackApiUrl = 'https://api.quotable.io/random';
+    this.fallbackApiUrl = 'https://thequoteshub.com/api/random-quote?format=json';
         this.init();
     }
 
@@ -209,28 +209,26 @@ class QuotesManager {
         
         if (!quoteText || !quoteAuthor) return;
 
+        // Try primary API first
         try {
-            // Try primary API first
             const quote = await this.fetchFromAPI();
-            if (quote) {
+            if (quote && quote.text && quote.author) {
                 this.displayQuote(quote.text, quote.author);
                 return;
             }
         } catch (error) {
-            console.log('Primary API failed, trying fallback...');
+            // continue to fallback
         }
-
+        // Try fallback API
         try {
-            // Try fallback API
             const quote = await this.fetchFromFallbackAPI();
-            if (quote) {
+            if (quote && quote.text && quote.author) {
                 this.displayQuote(quote.text, quote.author);
                 return;
             }
         } catch (error) {
-            console.log('Fallback API failed, using local quotes...');
+            // continue to local
         }
-
         // Use local quotes as final fallback
         this.displayLocalQuote();
     }
