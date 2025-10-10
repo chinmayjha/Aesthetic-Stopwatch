@@ -240,10 +240,22 @@ class QuotesManager {
       },
     ];
     this.currentQuoteIndex = 0;
-    // Use zenquotes.io as primary, thequoteshub.com as fallback
-    this.apiUrl = "https://zenquotes.io/api/random";
-    this.fallbackApiUrl =
-      "https://thequoteshub.com/api/random-quote?format=json";
+    // Multiple reliable APIs for quotes
+    this.apis = [
+      {
+        url: "https://api.quotable.io/random?minLength=50&maxLength=150",
+        parser: (data) => ({ text: data.content, author: data.author })
+      },
+      {
+        url: "https://zenquotes.io/api/random",
+        parser: (data) => Array.isArray(data) && data[0] ? { text: data[0].q, author: data[0].a } : null
+      },
+      {
+        url: "https://api.adviceslip.com/advice",
+        parser: (data) => data.slip ? { text: data.slip.advice, author: "Chinmay" } : null
+      }
+    ];
+    this.currentApiIndex = 0;
     this.init();
   }
 
@@ -262,71 +274,39 @@ class QuotesManager {
 
     if (!quoteText || !quoteAuthor) return;
 
-    // Try primary API with timeout
-    try {
-      const quote = await Promise.race([
-        this.fetchFromAPI(),
-        new Promise((_, reject) =>
-          setTimeout(() => reject(new Error("Timeout")), 3000)
-        ),
-      ]);
-      if (quote && quote.text && quote.author) {
-        this.displayQuote(quote.text, quote.author);
-        return;
+    // Try all APIs in sequence
+    for (let i = 0; i < this.apis.length; i++) {
+      try {
+        const api = this.apis[i];
+        const quote = await Promise.race([
+          this.fetchFromAPI(api),
+          new Promise((_, reject) =>
+            setTimeout(() => reject(new Error("Timeout")), 5000)
+          ),
+        ]);
+        
+        if (quote && quote.text && quote.author) {
+          this.displayQuote(quote.text, quote.author);
+          console.log(`Quote loaded from API ${i + 1}`);
+          return;
+        }
+      } catch (error) {
+        console.log(`API ${i + 1} failed:`, error.message);
+        continue;
       }
-    } catch (error) {
-      console.log("Primary API failed:", error.message);
-    }
-
-    // Try fallback API with timeout
-    try {
-      const quote = await Promise.race([
-        this.fetchFromFallbackAPI(),
-        new Promise((_, reject) =>
-          setTimeout(() => reject(new Error("Timeout")), 3000)
-        ),
-      ]);
-      if (quote && quote.text && quote.author) {
-        this.displayQuote(quote.text, quote.author);
-        return;
-      }
-    } catch (error) {
-      console.log("Fallback API failed:", error.message);
     }
 
     // Use local quotes as final fallback
+    console.log("All APIs failed, using local quotes");
     this.displayLocalQuote();
   }
 
-  async fetchFromAPI() {
+  async fetchFromAPI(api) {
     try {
-      const response = await fetch(this.apiUrl);
-      if (!response.ok) throw new Error("API Error");
+      const response = await fetch(api.url);
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
       const data = await response.json();
-      // zenquotes.io returns an array with .q and .a
-      if (Array.isArray(data) && data[0] && data[0].q && data[0].a) {
-        return {
-          text: data[0].q,
-          author: data[0].a,
-        };
-      }
-    } catch (error) {
-      throw error;
-    }
-  }
-
-  async fetchFromFallbackAPI() {
-    try {
-      const response = await fetch(this.fallbackApiUrl);
-      if (!response.ok) throw new Error("Fallback API Error");
-      const data = await response.json();
-      // thequoteshub.com returns {quote, author}
-      if (data && data.quote && data.author) {
-        return {
-          text: data.quote,
-          author: data.author,
-        };
-      }
+      return api.parser(data);
     } catch (error) {
       throw error;
     }
@@ -1039,38 +1019,40 @@ class Stopwatch {
   }
 
   updateLaps(appendOnly = false) {
-    // Update lap count
-    const lapsCount = document.getElementById("lapsCount");
-    if (lapsCount) {
-      const count = this.laps.length;
-      lapsCount.textContent =
-        count === 0 ? "0 laps" : count === 1 ? "1 lap" : `${count} laps`;
-    }
+    // Update statistics
+    this.updateLapStats();
 
     if (this.laps.length === 0) {
       if (this.lapsContainer) {
         this.lapsContainer.style.display = "none";
-        this.lapsContainer.classList.remove("show");
+      }
+      if (this.lapsList) {
+        this.lapsList.innerHTML = `
+          <div class="no-laps-message">
+            <div class="no-laps-icon">🏁</div>
+            <h3>No lap times yet</h3>
+            <p>Start the stopwatch and press the lap button to record your first lap time!</p>
+          </div>
+        `;
       }
       return;
     }
 
     if (this.lapsContainer) {
       this.lapsContainer.style.display = "block";
-      setTimeout(() => {
-        this.lapsContainer.classList.add("show");
-      }, 50);
     }
     if (!this.lapsList) return;
 
     // Efficient rendering: if appending, only render latest item to top
-    if (
-      appendOnly &&
-      this.laps.length > 0 &&
-      this.lapsList.children.length > 0
-    ) {
+    if (appendOnly && this.laps.length > 0) {
+      // Remove no-laps message if present
+      const noLapsMsg = this.lapsList.querySelector('.no-laps-message');
+      if (noLapsMsg) {
+        this.lapsList.innerHTML = '';
+      }
+      
       const lap = this.laps[this.laps.length - 1];
-      const el = this._renderLap(lap, this.laps.length - 1);
+      const el = this._renderMegaLap(lap, this.laps.length - 1);
       this.lapsList.prepend(el);
       return;
     }
@@ -1080,45 +1062,107 @@ class Stopwatch {
     const reversedLaps = [...this.laps].reverse();
     this.lapsList.innerHTML = "";
     reversedLaps.forEach((lap, idx) => {
-      frag.appendChild(this._renderLap(lap, this.laps.length - 1 - idx));
+      frag.appendChild(this._renderMegaLap(lap, this.laps.length - 1 - idx));
     });
     this.lapsList.appendChild(frag);
   }
 
-  _renderLap(lap, originalIndex) {
-    const lapElement = document.createElement("div");
-    lapElement.className = "lap-item";
+  updateLapStats() {
+    const lapsCount = document.getElementById("lapsCount");
+    const bestLap = document.getElementById("bestLap");
+    const avgLap = document.getElementById("avgLap");
+    const lastLap = document.getElementById("lastLap");
 
-    // Determine diff against previous (based on original order)
-    let diffClass = "";
-    let diffText = "";
+    if (lapsCount) {
+      lapsCount.textContent = this.laps.length.toString();
+    }
+
+    if (this.laps.length === 0) {
+      if (bestLap) bestLap.textContent = "--:--";
+      if (avgLap) avgLap.textContent = "--:--";
+      if (lastLap) lastLap.textContent = "--:--";
+      return;
+    }
+
+    // Calculate segment times
+    const segmentTimes = this.laps.map((lap, index) => {
+      if (index === 0) return lap.time;
+      return lap.time - this.laps[index - 1].time;
+    });
+
+    // Best lap (fastest segment)
+    if (bestLap) {
+      const fastest = Math.min(...segmentTimes);
+      bestLap.textContent = this.formatTime(fastest);
+    }
+
+    // Average lap
+    if (avgLap) {
+      const average = segmentTimes.reduce((a, b) => a + b, 0) / segmentTimes.length;
+      avgLap.textContent = this.formatTime(average);
+    }
+
+    // Last lap
+    if (lastLap) {
+      const lastSegment = segmentTimes[segmentTimes.length - 1];
+      lastLap.textContent = this.formatTime(lastSegment);
+    }
+  }
+
+  _renderMegaLap(lap, originalIndex) {
+    const lapRow = document.createElement("div");
+    lapRow.className = "lap-row";
+
+    // Calculate segment time
+    const segmentTime = originalIndex === 0 
+      ? lap.time 
+      : lap.time - this.laps[originalIndex - 1].time;
+
+    // Determine diff against previous segment
+    let diffClass = "same";
+    let diffText = "--";
     if (originalIndex > 0) {
-      const prevLap = this.laps[originalIndex - 1];
-      const seg = lap.time - prevLap.time; // segment time
-      const prevSeg =
-        originalIndex > 1
-          ? prevLap.time - this.laps[originalIndex - 2].time
-          : prevLap.time;
-      const delta = seg - prevSeg;
-      if (delta < 0) {
+      const prevSegTime = originalIndex === 1 
+        ? this.laps[0].time 
+        : this.laps[originalIndex - 1].time - this.laps[originalIndex - 2].time;
+      
+      const delta = segmentTime - prevSegTime;
+      if (delta < -50) { // More than 50ms faster
         diffClass = "faster";
         diffText = `-${this.formatTimeDifference(-delta)}`;
-      } else if (delta > 0) {
+      } else if (delta > 50) { // More than 50ms slower
         diffClass = "slower";
         diffText = `+${this.formatTimeDifference(delta)}`;
+      } else {
+        diffText = "±0.0s";
       }
     }
 
-    lapElement.innerHTML = `
-            <div class="lap-number">Lap ${lap.number}</div>
-            <div class="lap-time">${this.formatTime(lap.time)}</div>
-            ${
-              diffText
-                ? `<div class="lap-diff ${diffClass}">${diffText}</div>`
-                : ""
-            }
-        `;
-    return lapElement;
+    lapRow.innerHTML = `
+      <div class="lap-col lap-number">
+        <span class="lap-number">${lap.number}</span>
+      </div>
+      <div class="lap-col lap-time">${this.formatTime(segmentTime)}</div>
+      <div class="lap-col lap-total">${this.formatTime(lap.time)}</div>
+      <div class="lap-col lap-diff ${diffClass}">${diffText}</div>
+      <div class="lap-col lap-actions">
+        <div class="lap-row-actions">
+          <button class="lap-action-btn" title="Copy lap time" onclick="navigator.clipboard?.writeText('Lap ${lap.number}: ${this.formatTime(segmentTime)}')">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+            </svg>
+          </button>
+          <button class="lap-action-btn" title="Delete lap" onclick="this.closest('.lap-row').style.display='none'">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="3 6 5 6 21 6"></polyline>
+              <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+    `;
+    return lapRow;
   }
 
   formatTimeDifference(milliseconds) {
@@ -1621,6 +1665,27 @@ document.addEventListener("DOMContentLoaded", () => {
     stopwatch.laps = [];
     stopwatch.updateLaps();
     stopwatch.persistState();
+  });
+
+  // Lap search functionality
+  const lapSearch = document.getElementById("lapSearch");
+  lapSearch?.addEventListener("input", (e) => {
+    const searchTerm = e.target.value.toLowerCase();
+    const lapRows = document.querySelectorAll('.lap-row');
+    
+    lapRows.forEach(row => {
+      const lapNumber = row.querySelector('.lap-number')?.textContent || '';
+      const lapTime = row.querySelector('.lap-time')?.textContent || '';
+      const lapTotal = row.querySelector('.lap-total')?.textContent || '';
+      
+      const searchContent = `${lapNumber} ${lapTime} ${lapTotal}`.toLowerCase();
+      
+      if (searchContent.includes(searchTerm)) {
+        row.style.display = 'grid';
+      } else {
+        row.style.display = 'none';
+      }
+    });
   });
 
   // Lucide icons render pass

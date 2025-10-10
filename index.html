@@ -198,41 +198,81 @@
             </div>
         </section>
         
-        <!-- Laps Section -->
-        <section id="lapsContainer" class="laps-container-premium">
-            <div class="laps-header">
-                <div class="laps-title-enhanced">
-                    <span class="laps-icon"></span>
-                    <span class="laps-title-text">Lap Times</span>
+        <!-- Enhanced Large Laps Section -->
+        <section id="lapsContainer" class="laps-mega-container">
+            <div class="laps-hero-header">
+                <div class="laps-title-mega">
+                    <div class="laps-icon-large">⏱️</div>
+                    <h2 class="laps-main-title">Lap Times</h2>
                 </div>
-                <div class="laps-actions">
-                    <button id="copyLapsBtn" class="laps-action-btn" title="Copy laps to clipboard" aria-label="Copy laps">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-                        </svg>
-                    </button>
-                    <button id="exportLapsBtn" class="laps-action-btn" title="Download laps as CSV" aria-label="Export laps">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                            <polyline points="7 10 12 15 17 10"/>
-                            <line x1="12" y1="15" x2="12" y2="3"/>
-                        </svg>
-                    </button>
-                    <button id="clearLapsBtn" class="laps-action-btn danger" title="Clear all laps" aria-label="Clear laps">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <polyline points="3 6 5 6 21 6"/>
-                            <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
-                            <path d="M10 11v6"/>
-                            <path d="M14 11v6"/>
-                            <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>
-                        </svg>
-                    </button>
-                    <div class="laps-count" id="lapsCount">0 laps</div>
+                <div class="laps-stats-row">
+                    <div class="lap-stat-item">
+                        <span class="lap-stat-label">Total Laps</span>
+                        <span class="lap-stat-value" id="lapsCount">0</span>
+                    </div>
+                    <div class="lap-stat-item">
+                        <span class="lap-stat-label">Best Lap</span>
+                        <span class="lap-stat-value" id="bestLap">--:--</span>
+                    </div>
+                    <div class="lap-stat-item">
+                        <span class="lap-stat-label">Average</span>
+                        <span class="lap-stat-value" id="avgLap">--:--</span>
+                    </div>
+                    <div class="lap-stat-item">
+                        <span class="lap-stat-label">Last Lap</span>
+                        <span class="lap-stat-value" id="lastLap">--:--</span>
+                    </div>
                 </div>
             </div>
-            <div class="laps-list-container">
-                <ul id="lapsList" class="laps-list-enhanced"></ul>
+            
+            <div class="laps-controls-bar">
+                <button id="copyLapsBtn" class="lap-control-btn primary" title="Copy all laps to clipboard">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                    </svg>
+                    Copy All
+                </button>
+                <button id="exportLapsBtn" class="lap-control-btn secondary" title="Export laps as CSV file">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                        <polyline points="7 10 12 15 17 10"/>
+                        <line x1="12" y1="15" x2="12" y2="3"/>
+                    </svg>
+                    Export CSV
+                </button>
+                <button id="clearLapsBtn" class="lap-control-btn danger" title="Clear all lap times">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="3 6 5 6 21 6"/>
+                        <path d="M19 6l-1 14a2 2 0 0 1-2-2H8a2 2 0 0 1-2-2L5 6"/>
+                        <path d="M10 11v6"/><path d="M14 11v6"/>
+                    </svg>
+                    Clear All
+                </button>
+                <div class="laps-search-box">
+                    <input type="text" id="lapSearch" placeholder="Search laps..." class="lap-search-input">
+                    <svg class="search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+                    </svg>
+                </div>
+            </div>
+
+            <div class="laps-content-area">
+                <div class="laps-table-header">
+                    <div class="lap-col lap-number">#</div>
+                    <div class="lap-col lap-time">Lap Time</div>
+                    <div class="lap-col lap-total">Total Time</div>
+                    <div class="lap-col lap-diff">Difference</div>
+                    <div class="lap-col lap-actions">Actions</div>
+                </div>
+                
+                <div class="laps-list-mega" id="lapsList">
+                    <div class="no-laps-message">
+                        <div class="no-laps-icon">🏁</div>
+                        <h3>No lap times yet</h3>
+                        <p>Start the stopwatch and press the lap button to record your first lap time!</p>
+                    </div>
+                </div>
             </div>
         </section>
     </main>
