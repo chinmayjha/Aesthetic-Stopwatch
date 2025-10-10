@@ -462,6 +462,7 @@ class ModalManager {
 
 // Create global modal manager instance
 const modalManager = new ModalManager();
+window.modalManager = modalManager; // Make globally available
 
 // ================================================================================================
 // UI COMPONENT MANAGERS - BACKGROUNDS & FULLSCREEN
@@ -533,56 +534,214 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 });
 // ================================================================================================
-// SHARE MODAL MANAGEMENT
+// ENHANCED FAB & MODAL MANAGEMENT
 // ================================================================================================
-function initializeShareModal() {
+function initializeFABButtons() {
+  console.log("🎯 Initializing FAB Buttons...");
+  
   // Share Modal functionality
-  const shareInfoBtn = document.getElementById("shareBtn");
+  const shareBtn = document.getElementById("shareBtn");
   const shareModal = document.getElementById("shareModal");
   const shareOverlay = document.getElementById("shareOverlay");
   const closeShareBtn = document.getElementById("closeShareBtn");
 
-  console.log("🔗 Initializing Share Modal...");
-  console.log("  shareBtn found:", !!shareInfoBtn);
+  console.log("🔗 Share button elements check:");
+  console.log("  shareBtn found:", !!shareBtn);
   console.log("  shareModal found:", !!shareModal);
+  console.log("  shareOverlay found:", !!shareOverlay);
+  console.log("  closeShareBtn found:", !!closeShareBtn);
 
+  // Settings Modal functionality
+  const settingsToggle = document.getElementById("settingsToggle");
+  const settingsPanel = document.getElementById("settingsPanel");
+  const settingsOverlay = document.getElementById("settingsOverlay");
+  const closeSettingsBtn = document.getElementById("closeSettingsBtn");
+
+  console.log("⚙️ Settings button elements check:");
+  console.log("  settingsToggle found:", !!settingsToggle);
+  console.log("  settingsPanel found:", !!settingsPanel);
+  console.log("  settingsOverlay found:", !!settingsOverlay);
+  console.log("  closeSettingsBtn found:", !!closeSettingsBtn);
+
+  // Register Share Modal with modalManager
+  if (window.modalManager && shareModal && shareOverlay) {
+    modalManager.registerModal(
+      "shareModal",
+      () => {
+        shareOverlay.classList.add("active");
+        shareModal.classList.add("active");
+        document.body.classList.add("modal-open");
+        console.log("✅ Share modal opened via modalManager");
+      },
+      () => {
+        shareModal.classList.remove("active");
+        shareOverlay.classList.remove("active");
+        document.body.classList.remove("modal-open");
+        console.log("✅ Share modal closed via modalManager");
+      }
+    );
+  }
+
+  // Share Modal Functions
   function openShareModal() {
     console.log("📤 Opening share modal");
-    modalManager.openModal("shareModal");
+    if (window.modalManager) {
+      modalManager.openModal("shareModal");
+    } else {
+      // Fallback direct approach
+      if (shareModal && shareOverlay) {
+        shareOverlay.classList.add("active");
+        shareModal.classList.add("active");
+        document.body.classList.add("modal-open");
+        console.log("✅ Share modal opened (fallback)");
+      }
+    }
   }
 
   function closeShareModal() {
     console.log("❌ Closing share modal");
-    modalManager.closeModal("shareModal");
+    if (window.modalManager) {
+      modalManager.closeModal("shareModal");
+    } else {
+      // Fallback direct approach
+      if (shareModal && shareOverlay) {
+        shareModal.classList.remove("active");
+        shareOverlay.classList.remove("active");
+        document.body.classList.remove("modal-open");
+        console.log("✅ Share modal closed (fallback)");
+      }
+    }
   }
 
-  // Register share modal with manager
-  modalManager.registerModal(
-    "shareModal",
-    () => {
-      shareOverlay.classList.add("active");
-      shareModal.classList.add("active");
-      console.log("✅ Share modal opened");
-    },
-    () => {
-      shareModal.classList.remove("active");
-      shareOverlay.classList.remove("active");
-      console.log("✅ Share modal closed");
+  // Settings Panel Functions - integrate with modalManager
+  function openSettingsPanel() {
+    console.log("⚙️ Opening settings panel");
+    if (window.modalManager) {
+      modalManager.openModal("settingsPanel");
+    } else {
+      // Fallback direct approach
+      if (settingsPanel && settingsOverlay) {
+        settingsOverlay.classList.add("show");
+        settingsPanel.classList.add("show");
+        document.body.classList.add("modal-open");
+        console.log("✅ Settings panel opened (fallback)");
+      }
     }
-  );
+  }
 
-  if (shareInfoBtn) {
-    shareInfoBtn.addEventListener("click", (e) => {
+  function closeSettingsPanel() {
+    console.log("❌ Closing settings panel");
+    if (window.modalManager) {
+      modalManager.closeModal("settingsPanel");
+    } else {
+      // Fallback direct approach
+      if (settingsPanel && settingsOverlay) {
+        settingsPanel.classList.remove("show");
+        settingsOverlay.classList.remove("show");
+        document.body.classList.remove("modal-open");
+        console.log("✅ Settings panel closed (fallback)");
+      }
+    }
+  }
+
+  // Bind Share Button Events
+  if (shareBtn) {
+    // Remove any existing listeners by cloning
+    const newShareBtn = shareBtn.cloneNode(true);
+    shareBtn.parentNode.replaceChild(newShareBtn, shareBtn);
+    
+    newShareBtn.addEventListener("click", (e) => {
       e.preventDefault();
       e.stopPropagation();
       console.log("🖱️ Share button clicked");
       openShareModal();
     });
+    console.log("✅ Share button event bound");
+  } else {
+    console.error("❌ Share button not found!");
   }
-  if (closeShareBtn) closeShareBtn.addEventListener("click", closeShareModal);
-  if (shareOverlay) shareOverlay.addEventListener("click", closeShareModal);
 
-  // Copy URL functionality
+  // Bind Settings Button Events
+  if (settingsToggle) {
+    // Remove any existing listeners by cloning
+    const newSettingsBtn = settingsToggle.cloneNode(true);
+    settingsToggle.parentNode.replaceChild(newSettingsBtn, settingsToggle);
+    
+    newSettingsBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      console.log("🖱️ Settings button clicked");
+      openSettingsPanel();
+    });
+    console.log("✅ Settings button event bound");
+  } else {
+    console.error("❌ Settings button not found!");
+  }
+
+  // Bind Close Button Events
+  if (closeShareBtn) {
+    closeShareBtn.addEventListener("click", closeShareModal);
+  }
+  if (shareOverlay) {
+    shareOverlay.addEventListener("click", closeShareModal);
+  }
+  if (closeSettingsBtn) {
+    closeSettingsBtn.addEventListener("click", closeSettingsPanel);
+  }
+  if (settingsOverlay) {
+    settingsOverlay.addEventListener("click", closeSettingsPanel);
+  }
+
+  // Keyboard navigation support
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") {
+        // Let modalManager handle ESC key if available, otherwise handle directly
+        if (window.modalManager && modalManager.hasActiveModal) {
+          // modalManager should handle this globally
+          return;
+        }
+      
+        // Fallback: Close active modals on Escape
+        if (shareModal && shareModal.classList.contains("active")) {
+          closeShareModal();
+        }
+        if (settingsPanel && settingsPanel.classList.contains("show")) {
+          closeSettingsPanel();
+        }
+    }
+  });
+
+  console.log("🎯 FAB buttons initialization complete");
+
+    // Add extra safety check and re-bind if needed
+    setTimeout(() => {
+      const currentShareBtn = document.getElementById("shareBtn");
+      const currentSettingsBtn = document.getElementById("settingsToggle");
+    
+      if (currentShareBtn && !currentShareBtn.hasAttribute("data-fab-initialized")) {
+        console.log("⚠️ Re-binding share button...");
+        currentShareBtn.addEventListener("click", (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          console.log("🖱️ Share button clicked (re-bound)");
+          openShareModal();
+        });
+        currentShareBtn.setAttribute("data-fab-initialized", "true");
+      }
+    
+      if (currentSettingsBtn && !currentSettingsBtn.hasAttribute("data-fab-initialized")) {
+        console.log("⚠️ Re-binding settings button...");
+        currentSettingsBtn.addEventListener("click", (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          console.log("🖱️ Settings button clicked (re-bound)");
+          openSettingsPanel();
+        });
+        currentSettingsBtn.setAttribute("data-fab-initialized", "true");
+      }
+    }, 1000);
+
+    // Copy URL functionality
   const copyUrlBtn = document.getElementById("copyUrlBtn");
   if (copyUrlBtn) {
     copyUrlBtn.addEventListener("click", async () => {
@@ -593,8 +752,10 @@ function initializeShareModal() {
       } catch (err) {
         // Fallback for browsers without clipboard API
         const shareUrl = document.getElementById("shareUrl");
-        shareUrl.select();
-        document.execCommand("copy");
+        if (shareUrl) {
+          shareUrl.select();
+          document.execCommand("copy");
+        }
         showToast("Link copied to clipboard!");
       }
     });
@@ -764,10 +925,7 @@ class Stopwatch {
     this.lapBtn.addEventListener("click", () => this.addLap());
     this.resetBtn.addEventListener("click", () => this.reset());
 
-    // Settings panel
-    this.settingsToggle.addEventListener("click", () => this.toggleSettings());
-    this.closeSettingsBtn.addEventListener("click", () => this.closeSettings());
-    this.settingsOverlay.addEventListener("click", () => this.closeSettings());
+    // Settings panel - handled by FAB initialization
 
     // Keyboard shortcuts
     document.addEventListener("keydown", (e) => this.handleKeypress(e));
@@ -1942,9 +2100,9 @@ function initializeApp() {
     window.stopwatch = new Stopwatch();
     console.log("✅ Stopwatch initialized");
     
-    // Initialize share modal
-    initializeShareModal();
-    console.log("✅ Share modal initialized");
+    // Initialize FAB buttons and modals
+    initializeFABButtons();
+    console.log("✅ FAB buttons and modals initialized");
     
     // Load first random quote with delay for DOM readiness
     setTimeout(() => {
