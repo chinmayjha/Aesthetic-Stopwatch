@@ -170,26 +170,18 @@ class QuotesManager {
             { text: "Focus on being productive instead of busy.", author: "Tim Ferriss" }
         ];
         this.currentQuoteIndex = 0;
-        this.apiUrl = 'https://api.quotegarden.io/api/v3/quotes/random';
-        this.fallbackApiUrl = 'https://zenquotes.io/api/random';
+        this.apiUrl = 'https://zenquotes.io/api/random';
+        this.fallbackApiUrl = 'https://thequoteshub.com/api/random-quote?format=json';
         this.init();
     }
 
     init() {
         this.loadQuote();
-        this.bindEvents();
         
-        // Auto-refresh quote every 10 minutes
+        // Auto-refresh quote every 15 minutes
         setInterval(() => {
             this.loadQuote();
-        }, 600000);
-    }
-
-    bindEvents() {
-        const newQuoteBtn = document.getElementById('newQuoteBtn');
-        if (newQuoteBtn) {
-            newQuoteBtn.addEventListener('click', () => this.loadQuote());
-        }
+        }, 900000);
     }
 
     async loadQuote() {
@@ -230,10 +222,10 @@ class QuotesManager {
             if (!response.ok) throw new Error('API Error');
             
             const data = await response.json();
-            if (data.statusCode === 200 && data.data) {
+            if (data && data[0]) {
                 return {
-                    text: data.data.quoteText,
-                    author: data.data.quoteAuthor
+                    text: data[0].q,
+                    author: data[0].a
                 };
             }
         } catch (error) {
@@ -247,10 +239,10 @@ class QuotesManager {
             if (!response.ok) throw new Error('Fallback API Error');
             
             const data = await response.json();
-            if (data && data[0]) {
+            if (data.statusCode === 200 && data.data) {
                 return {
-                    text: data[0].q,
-                    author: data[0].a
+                    text: data.data.quoteText,
+                    author: data.data.quoteAuthor
                 };
             }
         } catch (error) {
@@ -268,21 +260,27 @@ class QuotesManager {
         const quoteText = document.getElementById('quoteText');
         const quoteAuthor = document.getElementById('quoteAuthor');
         
+        if (!quoteText || !quoteAuthor) return;
+        
         // Clean up text
         const cleanText = text.replace(/["'"]/g, '').trim();
         const cleanAuthor = author || 'Anonymous';
 
-        // Add fade effect
+        // Add fade effect with transform
         quoteText.style.opacity = '0';
         quoteAuthor.style.opacity = '0';
+        quoteText.style.transform = 'translateY(10px)';
+        quoteAuthor.style.transform = 'translateY(10px)';
         
         setTimeout(() => {
             quoteText.textContent = cleanText;
-            quoteAuthor.textContent = `- ${cleanAuthor}`;
+            quoteAuthor.textContent = cleanAuthor;
             
             quoteText.style.opacity = '1';
             quoteAuthor.style.opacity = '1';
-        }, 200);
+            quoteText.style.transform = 'translateY(0)';
+            quoteAuthor.style.transform = 'translateY(0)';
+        }, 300);
     }
 
     // Method to get quote based on context (studying, working, etc.)
