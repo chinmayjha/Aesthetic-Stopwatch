@@ -170,8 +170,8 @@ class QuotesManager {
             { text: "Focus on being productive instead of busy.", author: "Tim Ferriss" }
         ];
         this.currentQuoteIndex = 0;
-        this.apiUrl = 'https://zenquotes.io/api/random';
-        this.fallbackApiUrl = 'https://thequoteshub.com/api/random-quote?format=json';
+        this.apiUrl = 'https://thequoteshub.com/api/random-quote?format=json';
+        this.fallbackApiUrl = 'https://zenquotes.io/api/random';
         this.init();
     }
 
@@ -519,22 +519,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Register share modal with manager
     modalManager.registerModal('shareModal', () => {
-        shareModal.style.display = 'flex';
-        shareOverlay.style.display = 'block';
-        setTimeout(() => {
-            shareModal.classList.add('active');
-            shareOverlay.classList.add('active');
-        }, 10);
+        shareOverlay.classList.add('active');
+        shareModal.classList.add('active');
         // Hide FAB buttons
         const fabGroup = document.querySelector('.fab-group');
         if (fabGroup) fabGroup.classList.add('hidden');
     }, () => {
         shareModal.classList.remove('active');
         shareOverlay.classList.remove('active');
-        setTimeout(() => {
-            shareModal.style.display = 'none';
-            shareOverlay.style.display = 'none';
-        }, 400);
         // Show FAB buttons
         const fabGroup = document.querySelector('.fab-group');
         if (fabGroup) fabGroup.classList.remove('hidden');
@@ -544,35 +536,63 @@ document.addEventListener('DOMContentLoaded', () => {
     if (closeShareBtn) closeShareBtn.addEventListener('click', closeShareModal);
     if (shareOverlay) shareOverlay.addEventListener('click', closeShareModal);
 
-    // Copy link functionality
-    const copyShareLinkBtn = document.getElementById('copyShareLinkBtn');
-    if (copyShareLinkBtn) {
-        copyShareLinkBtn.addEventListener('click', () => {
+    // Copy URL functionality
+    const copyUrlBtn = document.getElementById('copyUrlBtn');
+    if (copyUrlBtn) {
+        copyUrlBtn.addEventListener('click', async () => {
             const url = 'https://stopwatch.chinmayjha.tech/';
-            navigator.clipboard.writeText(url).then(() => {
-                const btnText = copyShareLinkBtn.querySelector('.btn-text') || copyShareLinkBtn;
-                const originalText = btnText.textContent;
-                btnText.textContent = 'Copied!';
-                setTimeout(() => {
-                    btnText.textContent = originalText;
-                }, 1200);
-            }).catch(() => {
+            try {
+                await navigator.clipboard.writeText(url);
+                showToast('Link copied to clipboard!');
+            } catch (err) {
                 // Fallback for browsers without clipboard API
-                const textArea = document.createElement('textarea');
-                textArea.value = url;
-                document.body.appendChild(textArea);
-                textArea.select();
+                const shareUrl = document.getElementById('shareUrl');
+                shareUrl.select();
                 document.execCommand('copy');
-                document.body.removeChild(textArea);
-                
-                const btnText = copyShareLinkBtn.querySelector('.btn-text') || copyShareLinkBtn;
-                const originalText = btnText.textContent;
-                btnText.textContent = 'Copied!';
-                setTimeout(() => {
-                    btnText.textContent = originalText;
-                }, 1200);
-            });
+                showToast('Link copied to clipboard!');
+            }
         });
+    }
+
+    // Social sharing functionality
+    const socialBtns = document.querySelectorAll('.social-btn');
+    socialBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const platform = btn.dataset.platform;
+            const url = 'https://stopwatch.chinmayjha.tech/';
+            const text = 'Check out this beautiful aesthetic stopwatch!';
+            
+            let shareUrl = '';
+            switch(platform) {
+                case 'twitter':
+                    shareUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`;
+                    break;
+                case 'whatsapp':
+                    shareUrl = `https://wa.me/?text=${encodeURIComponent(text + ' ' + url)}`;
+                    break;
+                case 'telegram':
+                    shareUrl = `https://t.me/share/url?url=${encodeURIComponent(url)}&text=${encodeURIComponent(text)}`;
+                    break;
+            }
+            
+            if (shareUrl) {
+                window.open(shareUrl, '_blank', 'width=600,height=400');
+            }
+        });
+    });
+
+    // Toast notification function
+    function showToast(message) {
+        const toast = document.createElement('div');
+        toast.className = 'toast-notification';
+        toast.textContent = message;
+        document.body.appendChild(toast);
+        
+        setTimeout(() => toast.classList.add('show'), 100);
+        setTimeout(() => {
+            toast.classList.remove('show');
+            setTimeout(() => document.body.removeChild(toast), 300);
+        }, 2000);
     }
 });
 
