@@ -184,173 +184,114 @@ document.addEventListener("DOMContentLoaded", () => {
 class QuotesManager {
   constructor() {
     this.quotes = [
-      {
-        text: "The way to get started is to quit talking and begin doing.",
-        author: "Walt Disney",
-      },
-      {
-        text: "Don't let yesterday take up too much of today.",
-        author: "Will Rogers",
-      },
-      {
-        text: "You learn more from failure than from success.",
-        author: "Anonymous",
-      },
-      {
-        text: "It's not whether you get knocked down, it's whether you get up.",
-        author: "Vince Lombardi",
-      },
-      {
-        text: "If you are working on something that you really care about, you don't have to be pushed.",
-        author: "Steve Jobs",
-      },
-      {
-        text: "Success is not final, failure is not fatal: it is the courage to continue that counts.",
-        author: "Winston Churchill",
-      },
-      {
-        text: "The future belongs to those who believe in the beauty of their dreams.",
-        author: "Eleanor Roosevelt",
-      },
-      {
-        text: "Your time is limited, don't waste it living someone else's life.",
-        author: "Steve Jobs",
-      },
-      {
-        text: "The only impossible journey is the one you never begin.",
-        author: "Tony Robbins",
-      },
-      {
-        text: "Believe you can and you're halfway there.",
-        author: "Theodore Roosevelt",
-      },
-      {
-        text: "Don't watch the clock; do what it does. Keep going.",
-        author: "Sam Levenson",
-      },
-      {
-        text: "The expert in anything was once a beginner.",
-        author: "Helen Hayes",
-      },
+      // Motivation & Success
+      { text: "The way to get started is to quit talking and begin doing.", author: "Walt Disney" },
+      { text: "Don't let yesterday take up too much of today.", author: "Will Rogers" },
+      { text: "You learn more from failure than from success.", author: "Anonymous" },
+      { text: "It's not whether you get knocked down, it's whether you get up.", author: "Vince Lombardi" },
+      { text: "Success is not final, failure is not fatal: it is the courage to continue that counts.", author: "Winston Churchill" },
+      { text: "The future belongs to those who believe in the beauty of their dreams.", author: "Eleanor Roosevelt" },
+      { text: "Your time is limited, don't waste it living someone else's life.", author: "Steve Jobs" },
+      { text: "The only impossible journey is the one you never begin.", author: "Tony Robbins" },
+      { text: "Believe you can and you're halfway there.", author: "Theodore Roosevelt" },
+      { text: "Don't watch the clock; do what it does. Keep going.", author: "Sam Levenson" },
+      
+      // Productivity & Focus  
+      { text: "Focus on being productive instead of busy.", author: "Tim Ferriss" },
       { text: "Progress, not perfection, is the goal.", author: "Anonymous" },
       { text: "Every moment is a fresh beginning.", author: "T.S. Eliot" },
-      {
-        text: "Focus on being productive instead of busy.",
-        author: "Tim Ferriss",
-      },
+      { text: "The expert in anything was once a beginner.", author: "Helen Hayes" },
+      { text: "Time is what we want most, but what we use worst.", author: "William Penn" },
+      { text: "You may delay, but time will not.", author: "Benjamin Franklin" },
+      { text: "The key is not to prioritize what's on your schedule, but to schedule your priorities.", author: "Stephen Covey" },
+      
+      // Perseverance & Growth
+      { text: "It does not matter how slowly you go as long as you do not stop.", author: "Confucius" },
+      { text: "Great things never come from comfort zones.", author: "Anonymous" },
+      { text: "The only way to do great work is to love what you do.", author: "Steve Jobs" },
+      { text: "Innovation distinguishes between a leader and a follower.", author: "Steve Jobs" },
+      { text: "The best time to plant a tree was 20 years ago. The second best time is now.", author: "Chinese Proverb" },
+      { text: "A year from now you may wish you had started today.", author: "Karen Lamb" },
+      { text: "The only person you are destined to become is the person you decide to be.", author: "Ralph Waldo Emerson" },
+      
+      // Mindfulness & Present
+      { text: "Yesterday is history, tomorrow is a mystery, today is a gift.", author: "Eleanor Roosevelt" },
+      { text: "Be yourself; everyone else is already taken.", author: "Oscar Wilde" },
+      { text: "In the middle of difficulty lies opportunity.", author: "Albert Einstein" },
+      { text: "Life is what happens to you while you're busy making other plans.", author: "John Lennon" },
+      { text: "The present moment is the only time over which we have dominion.", author: "Thich Nhat Hanh" },
+      { text: "Do not dwell in the past, do not dream of the future, concentrate the mind on the present moment.", author: "Buddha" },
+      
+      // Achievement & Excellence
+      { text: "Excellence is never an accident. It is always the result of high intention.", author: "Aristotle" },
+      { text: "Quality is not an act, it is a habit.", author: "Aristotle" },
+      { text: "Strive not to be a success, but rather to be of value.", author: "Albert Einstein" },
+      { text: "The difference between ordinary and extraordinary is that little extra.", author: "Jimmy Johnson" },
+      { text: "Champions aren't made in gyms. Champions are made from something deep inside them.", author: "Muhammad Ali" },
+      
+      // Wisdom & Life
+      { text: "The journey of a thousand miles begins with one step.", author: "Lao Tzu" },
+      { text: "What lies behind us and what lies before us are tiny matters compared to what lies within us.", author: "Ralph Waldo Emerson" },
+      { text: "Turn your wounds into wisdom.", author: "Oprah Winfrey" },
+      { text: "Life is 10% what happens to you and 90% how you react to it.", author: "Charles R. Swindoll" },
+      { text: "The mind is everything. What you think you become.", author: "Buddha" }
     ];
-    this.currentQuoteIndex = 0;
-    // Multiple reliable APIs for quotes
-    this.apis = [
-      {
-        url: "https://thequoteshub.com/api/random-quote?format=json",
-        parser: (data) => data.quote && data.author ? { text: data.quote, author: data.author } : null
-      },
-      {
-        url: "https://zenquotes.io/api/random",
-        parser: (data) => Array.isArray(data) && data[0] ? { text: data[0].q, author: data[0].a } : null
-      },
-      {
-        url: "https://api.adviceslip.com/advice",
-        parser: (data) => data.slip ? { text: data.slip.advice, author: "Advice Slip" } : null
-      }
-    ];
-    this.currentApiIndex = 0;
+    
+    this.currentQuoteIndex = Math.floor(Math.random() * this.quotes.length);
     this.init();
   }
 
   init() {
-    this.loadQuote();
-
-    // Auto-refresh quote every 15 minutes
+    this.loadRandomQuote();
+    
+    // Auto-refresh quote every 2 minutes for variety
     setInterval(() => {
-      this.loadQuote();
-    }, 900000);
+      this.loadRandomQuote();
+    }, 120000);
+    
+    // Load new quote on scroll
+    this.setupScrollQuotes();
   }
 
-  async loadQuote() {
+  setupScrollQuotes() {
+    let scrollTimeout;
+    let lastScrollY = 0;
+    
+    window.addEventListener('scroll', () => {
+      const currentScrollY = window.scrollY;
+      
+      // Only trigger on significant scroll movement
+      if (Math.abs(currentScrollY - lastScrollY) > 50) {
+        clearTimeout(scrollTimeout);
+        scrollTimeout = setTimeout(() => {
+          this.loadRandomQuote();
+          lastScrollY = currentScrollY;
+        }, 1000); // Wait 1 second after scroll stops
+      }
+    });
+  }
+
+  loadRandomQuote() {
     const quoteText = document.getElementById("quoteText");
     const quoteAuthor = document.getElementById("quoteAuthor");
 
     if (!quoteText || !quoteAuthor) {
       console.warn("⚠️ Quote elements not found - DOM may not be ready");
-      // Try again in a moment if DOM isn't ready
-      setTimeout(() => this.loadQuote(), 1000);
+      setTimeout(() => this.loadRandomQuote(), 1000);
       return;
     }
 
-    console.log("📝 Quote elements found, loading quote...");
-
-    // Show loading state
-    this.displayQuote("Loading inspiration...", "");
-    const quoteContainer = quoteText.closest('.quote-container');
-    if (quoteContainer) {
-      quoteContainer.classList.add('loading-quote');
-    }
-
-    // Try all APIs in sequence
-    for (let i = 0; i < this.apis.length; i++) {
-      try {
-        const api = this.apis[i];
-        console.log(`Trying API ${i + 1}: ${api.url}`);
-        
-        const quote = await Promise.race([
-          this.fetchFromAPI(api),
-          new Promise((_, reject) =>
-            setTimeout(() => reject(new Error("Timeout")), 3000)
-          ),
-        ]);
-        
-        if (quote && quote.text && quote.author) {
-          this.displayQuote(quote.text, quote.author);
-          console.log(`✅ Quote loaded from API ${i + 1}`);
-          // Remove loading state
-          const quoteText = document.getElementById("quoteText");
-          if (quoteText) {
-            const quoteContainer = quoteText.closest('.quote-container');
-            if (quoteContainer) {
-              quoteContainer.classList.remove('loading-quote');
-            }
-          }
-          return;
-        } else {
-          console.log(`❌ API ${i + 1} returned invalid data:`, quote);
-        }
-      } catch (error) {
-        console.log(`❌ API ${i + 1} failed:`, error.message);
-        continue;
-      }
-    }
-
-    // Use local quotes as final fallback
-    console.log("🔄 All APIs failed, using local quotes");
-    this.displayLocalQuote();
-  }
-
-  async fetchFromAPI(api) {
-    try {
-      const response = await fetch(api.url);
-      if (!response.ok) throw new Error(`HTTP ${response.status}`);
-      const data = await response.json();
-      return api.parser(data);
-    } catch (error) {
-      throw error;
-    }
-  }
-
-  displayLocalQuote() {
-    const quote = this.quotes[this.currentQuoteIndex];
-    this.displayQuote(quote.text, quote.author);
-    this.currentQuoteIndex = (this.currentQuoteIndex + 1) % this.quotes.length;
+    // Get a random quote (different from current)
+    let newIndex;
+    do {
+      newIndex = Math.floor(Math.random() * this.quotes.length);
+    } while (newIndex === this.currentQuoteIndex && this.quotes.length > 1);
     
-    // Remove loading state
-    const quoteText = document.getElementById("quoteText");
-    if (quoteText) {
-      const quoteContainer = quoteText.closest('.quote-container');
-      if (quoteContainer) {
-        quoteContainer.classList.remove('loading-quote');
-      }
-    }
+    this.currentQuoteIndex = newIndex;
+    const quote = this.quotes[this.currentQuoteIndex];
+    
+    console.log(`✨ Loading random quote: "${quote.text.substring(0, 30)}..." - ${quote.author}`);
+    this.displayQuote(quote.text, quote.author);
   }
 
   displayQuote(text, author) {
@@ -363,57 +304,28 @@ class QuotesManager {
     const cleanText = text.replace(/["'"]/g, "").trim();
     const cleanAuthor = author || "Anonymous";
 
-    // Add fade effect with transform
+    // Enhanced fade effect with rotation and scale
     quoteText.style.opacity = "0";
     quoteAuthor.style.opacity = "0";
-    quoteText.style.transform = "translateY(10px)";
-    quoteAuthor.style.transform = "translateY(10px)";
+    quoteText.style.transform = "translateY(15px) scale(0.98)";
+    quoteAuthor.style.transform = "translateY(10px) scale(0.98)";
 
     setTimeout(() => {
       quoteText.textContent = cleanText;
       quoteAuthor.textContent = cleanAuthor;
 
+      // Smooth transition back
       quoteText.style.opacity = "1";
       quoteAuthor.style.opacity = "1";
-      quoteText.style.transform = "translateY(0)";
-      quoteAuthor.style.transform = "translateY(0)";
-    }, 300);
+      quoteText.style.transform = "translateY(0) scale(1)";
+      quoteAuthor.style.transform = "translateY(0) scale(1)";
+    }, 400);
   }
 
-  // Method to get quote based on context (studying, working, etc.)
-  getContextualQuote(context = "general") {
-    const contextQuotes = {
-      studying: [
-        {
-          text: "Education is the most powerful weapon which you can use to change the world.",
-          author: "Nelson Mandela",
-        },
-        {
-          text: "The expert in anything was once a beginner.",
-          author: "Helen Hayes",
-        },
-        {
-          text: "Learning never exhausts the mind.",
-          author: "Leonardo da Vinci",
-        },
-      ],
-      working: [
-        {
-          text: "Choose a job you love, and you will never have to work a day in your life.",
-          author: "Confucius",
-        },
-        {
-          text: "The way to get started is to quit talking and begin doing.",
-          author: "Walt Disney",
-        },
-        {
-          text: "Focus on being productive instead of busy.",
-          author: "Tim Ferriss",
-        },
-      ],
-    };
-
-    return contextQuotes[context] || this.quotes;
+  // Get random quote from current collection
+  getRandomQuote() {
+    const randomIndex = Math.floor(Math.random() * this.quotes.length);
+    return this.quotes[randomIndex];
   }
 }
 
@@ -623,18 +535,24 @@ document.addEventListener("DOMContentLoaded", () => {
 // ================================================================================================
 // SHARE MODAL MANAGEMENT
 // ================================================================================================
-document.addEventListener("DOMContentLoaded", () => {
+function initializeShareModal() {
   // Share Modal functionality
   const shareInfoBtn = document.getElementById("shareBtn");
   const shareModal = document.getElementById("shareModal");
   const shareOverlay = document.getElementById("shareOverlay");
   const closeShareBtn = document.getElementById("closeShareBtn");
 
+  console.log("🔗 Initializing Share Modal...");
+  console.log("  shareBtn found:", !!shareInfoBtn);
+  console.log("  shareModal found:", !!shareModal);
+
   function openShareModal() {
+    console.log("📤 Opening share modal");
     modalManager.openModal("shareModal");
   }
 
   function closeShareModal() {
+    console.log("❌ Closing share modal");
     modalManager.closeModal("shareModal");
   }
 
@@ -644,20 +562,23 @@ document.addEventListener("DOMContentLoaded", () => {
     () => {
       shareOverlay.classList.add("active");
       shareModal.classList.add("active");
-      // Hide FAB buttons
-      const fabGroup = document.querySelector(".fab-group");
-      if (fabGroup) fabGroup.classList.add("hidden");
+      console.log("✅ Share modal opened");
     },
     () => {
       shareModal.classList.remove("active");
       shareOverlay.classList.remove("active");
-      // Show FAB buttons
-      const fabGroup = document.querySelector(".fab-group");
-      if (fabGroup) fabGroup.classList.remove("hidden");
+      console.log("✅ Share modal closed");
     }
   );
 
-  if (shareInfoBtn) shareInfoBtn.addEventListener("click", openShareModal);
+  if (shareInfoBtn) {
+    shareInfoBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      console.log("🖱️ Share button clicked");
+      openShareModal();
+    });
+  }
   if (closeShareBtn) closeShareBtn.addEventListener("click", closeShareModal);
   if (shareOverlay) shareOverlay.addEventListener("click", closeShareModal);
 
@@ -678,6 +599,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
   }
+}
 
   // Social sharing functionality
   const socialBtns = document.querySelectorAll(".social-btn");
@@ -725,7 +647,7 @@ document.addEventListener("DOMContentLoaded", () => {
       setTimeout(() => document.body.removeChild(toast), 300);
     }, 2000);
   }
-});
+
 
 // ================================================================================================
 // DEVELOPER MODAL MANAGEMENT
@@ -1252,10 +1174,10 @@ class Stopwatch {
         break;
       case "KeyQ":
         event.preventDefault();
-        // Refresh quote
+        // Get new random quote
         if (window.quotesManager) {
-          window.quotesManager.loadQuote();
-          console.log("🔄 Quote refreshed via keyboard shortcut");
+          window.quotesManager.loadRandomQuote();
+          console.log("🔄 New random quote loaded via keyboard shortcut");
         }
         break;
       case "Escape":
@@ -2020,30 +1942,33 @@ function initializeApp() {
     window.stopwatch = new Stopwatch();
     console.log("✅ Stopwatch initialized");
     
-    // Load first quote with delay for DOM readiness
+    // Initialize share modal
+    initializeShareModal();
+    console.log("✅ Share modal initialized");
+    
+    // Load first random quote with delay for DOM readiness
     setTimeout(() => {
       if (window.quotesManager) {
-        window.quotesManager.loadQuote();
+        window.quotesManager.loadRandomQuote();
       }
-    }, 1000);
+    }, 500);
     
-    // Retry loading quote every 30 seconds if failed
-    setInterval(() => {
-      const quoteText = document.getElementById("quoteText");
-      if (quoteText && (quoteText.textContent === "Loading inspiration..." || quoteText.textContent === "")) {
-        console.log("🔄 Retrying quote load...");
-        window.quotesManager.loadQuote();
-      }
-    }, 30000);
-    
-    // Test lap functionality
+    // Test functionality
     setTimeout(() => {
       if (window.stopwatch) {
-        console.log("🧪 Testing lap container visibility...");
+        console.log("🧪 Testing components...");
         const lapsContainer = document.getElementById("lapsContainer");
-        console.log("Laps container found:", lapsContainer ? "Yes" : "No");
-        if (lapsContainer) {
-          console.log("Laps container classes:", lapsContainer.className);
+        const fabGroup = document.querySelector(".fab-group");
+        const settingsPanel = document.getElementById("settingsPanel");
+        
+        console.log("  Laps container found:", lapsContainer ? "✅" : "❌");
+        console.log("  FAB group found:", fabGroup ? "✅" : "❌");
+        console.log("  Settings panel found:", settingsPanel ? "✅" : "❌");
+        
+        if (settingsPanel) {
+          // Ensure settings panel is hidden by default
+          settingsPanel.classList.remove("show");
+          console.log("  Settings panel properly hidden");
         }
       }
     }, 2000);
