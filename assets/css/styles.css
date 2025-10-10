@@ -3289,6 +3289,43 @@ input:focus-visible,
    TAILWIND-COMPATIBLE STYLES
    ================================= */
 
+/* Essential utility classes */
+.hidden {
+  display: none !important;
+}
+
+.visible {
+  display: block !important;
+}
+
+/* Enhanced lap container animations */
+#lapsContainer {
+  transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+}
+
+#lapsContainer.hidden {
+  opacity: 0;
+  transform: translateY(-10px);
+  pointer-events: none;
+}
+
+#lapsContainer:not(.hidden) {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: all;
+}
+
+/* Loading states */
+.loading-quote {
+  opacity: 0.6;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 0.8; }
+}
+
 /* Custom scrollbar for laps list */
 .scrollbar-thin {
   scrollbar-width: thin;

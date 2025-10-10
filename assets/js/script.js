@@ -244,7 +244,7 @@ class QuotesManager {
     this.apis = [
       {
         url: "https://thequoteshub.com/api/random-quote?format=json",
-        parser: (data) => ({ text: text, author: author })
+        parser: (data) => data.quote && data.author ? { text: data.quote, author: data.author } : null
       },
       {
         url: "https://zenquotes.io/api/random",
@@ -252,7 +252,7 @@ class QuotesManager {
       },
       {
         url: "https://api.adviceslip.com/advice",
-        parser: (data) => data.slip ? { text: data.slip.advice, author: "" } : null
+        parser: (data) => data.slip ? { text: data.slip.advice, author: "Advice Slip" } : null
       }
     ];
     this.currentApiIndex = 0;
@@ -272,32 +272,58 @@ class QuotesManager {
     const quoteText = document.getElementById("quoteText");
     const quoteAuthor = document.getElementById("quoteAuthor");
 
-    if (!quoteText || !quoteAuthor) return;
+    if (!quoteText || !quoteAuthor) {
+      console.warn("⚠️ Quote elements not found - DOM may not be ready");
+      // Try again in a moment if DOM isn't ready
+      setTimeout(() => this.loadQuote(), 1000);
+      return;
+    }
+
+    console.log("📝 Quote elements found, loading quote...");
+
+    // Show loading state
+    this.displayQuote("Loading inspiration...", "");
+    const quoteContainer = quoteText.closest('.quote-container');
+    if (quoteContainer) {
+      quoteContainer.classList.add('loading-quote');
+    }
 
     // Try all APIs in sequence
     for (let i = 0; i < this.apis.length; i++) {
       try {
         const api = this.apis[i];
+        console.log(`Trying API ${i + 1}: ${api.url}`);
+        
         const quote = await Promise.race([
           this.fetchFromAPI(api),
           new Promise((_, reject) =>
-            setTimeout(() => reject(new Error("Timeout")), 5000)
+            setTimeout(() => reject(new Error("Timeout")), 3000)
           ),
         ]);
         
         if (quote && quote.text && quote.author) {
           this.displayQuote(quote.text, quote.author);
-          console.log(`Quote loaded from API ${i + 1}`);
+          console.log(`✅ Quote loaded from API ${i + 1}`);
+          // Remove loading state
+          const quoteText = document.getElementById("quoteText");
+          if (quoteText) {
+            const quoteContainer = quoteText.closest('.quote-container');
+            if (quoteContainer) {
+              quoteContainer.classList.remove('loading-quote');
+            }
+          }
           return;
+        } else {
+          console.log(`❌ API ${i + 1} returned invalid data:`, quote);
         }
       } catch (error) {
-        console.log(`API ${i + 1} failed:`, error.message);
+        console.log(`❌ API ${i + 1} failed:`, error.message);
         continue;
       }
     }
 
     // Use local quotes as final fallback
-    console.log("All APIs failed, using local quotes");
+    console.log("🔄 All APIs failed, using local quotes");
     this.displayLocalQuote();
   }
 
@@ -316,6 +342,15 @@ class QuotesManager {
     const quote = this.quotes[this.currentQuoteIndex];
     this.displayQuote(quote.text, quote.author);
     this.currentQuoteIndex = (this.currentQuoteIndex + 1) % this.quotes.length;
+    
+    // Remove loading state
+    const quoteText = document.getElementById("quoteText");
+    if (quoteText) {
+      const quoteContainer = quoteText.closest('.quote-container');
+      if (quoteContainer) {
+        quoteContainer.classList.remove('loading-quote');
+      }
+    }
   }
 
   displayQuote(text, author) {
@@ -771,6 +806,11 @@ class Stopwatch {
     this.startPauseIcon = document.getElementById("startPauseIcon");
     this.lapsContainer = document.getElementById("lapsContainer");
     this.lapsList = document.getElementById("lapsList");
+    
+    // Debug element finding
+    console.log("🔍 Element check:");
+    console.log("  lapsContainer:", this.lapsContainer ? "✅ Found" : "❌ Missing");
+    console.log("  lapsList:", this.lapsList ? "✅ Found" : "❌ Missing");
 
     // Settings elements
     this.settingsToggle = document.getElementById("settingsToggle");
@@ -1021,7 +1061,10 @@ class Stopwatch {
     // Update statistics
     this.updateLapStats();
 
+    console.log(`🏃 updateLaps called - Laps count: ${this.laps.length}, appendOnly: ${appendOnly}`);
+
     if (this.laps.length === 0) {
+      console.log("📝 No laps - hiding container");
       if (this.lapsContainer) {
         this.lapsContainer.classList.add("hidden");
       }
@@ -1037,8 +1080,14 @@ class Stopwatch {
       return;
     }
 
+    console.log("📝 Laps found - showing container");
     if (this.lapsContainer) {
       this.lapsContainer.classList.remove("hidden");
+      // Ensure display is explicitly set for Tailwind compatibility
+      this.lapsContainer.style.display = "";
+      console.log("✅ Laps container made visible");
+    } else {
+      console.error("❌ Laps container not found!");
     }
     if (!this.lapsList) return;
 
@@ -1187,20 +1236,44 @@ class Stopwatch {
       case "Space":
         event.preventDefault();
         this.toggleStopwatch();
+        this.flashButton(this.startPauseBtn);
         break;
       case "KeyR":
         event.preventDefault();
         this.reset();
+        this.flashButton(this.resetBtn);
         break;
       case "KeyL":
         event.preventDefault();
-        this.addLap();
+        if (this.isRunning || this.elapsedTime > 0) {
+          this.addLap();
+          this.flashButton(this.lapBtn);
+        }
+        break;
+      case "KeyQ":
+        event.preventDefault();
+        // Refresh quote
+        if (window.quotesManager) {
+          window.quotesManager.loadQuote();
+          console.log("🔄 Quote refreshed via keyboard shortcut");
+        }
         break;
       case "Escape":
         // ESC key is now handled globally by modalManager
         // This prevents duplicate handling and conflicts
         break;
     }
+  }
+
+  // Visual feedback for keyboard shortcuts
+  flashButton(button) {
+    if (!button) return;
+    button.style.transform = 'scale(0.95)';
+    button.style.transition = 'transform 0.1s ease';
+    setTimeout(() => {
+      button.style.transform = '';
+      button.style.transition = '';
+    }, 100);
   }
 
   // Settings Panel Methods
@@ -1933,14 +2006,77 @@ if ("getBattery" in navigator) {
 }
 
 // ================================================================================================
-// INITIALIZE QUOTES MANAGER
+// INITIALIZE APPLICATION WITH ENHANCED ERROR HANDLING
 // ================================================================================================
-document.addEventListener("DOMContentLoaded", () => {
-  // Initialize quotes manager
-  window.quotesManager = new QuotesManager();
+function initializeApp() {
+  console.log("🚀 Initializing Aesthetic Stopwatch...");
+  
+  try {
+    // Initialize quotes manager
+    window.quotesManager = new QuotesManager();
+    console.log("✅ Quotes manager initialized");
+    
+    // Initialize stopwatch
+    window.stopwatch = new Stopwatch();
+    console.log("✅ Stopwatch initialized");
+    
+    // Load first quote with delay for DOM readiness
+    setTimeout(() => {
+      if (window.quotesManager) {
+        window.quotesManager.loadQuote();
+      }
+    }, 1000);
+    
+    // Retry loading quote every 30 seconds if failed
+    setInterval(() => {
+      const quoteText = document.getElementById("quoteText");
+      if (quoteText && (quoteText.textContent === "Loading inspiration..." || quoteText.textContent === "")) {
+        console.log("🔄 Retrying quote load...");
+        window.quotesManager.loadQuote();
+      }
+    }, 30000);
+    
+    // Test lap functionality
+    setTimeout(() => {
+      if (window.stopwatch) {
+        console.log("🧪 Testing lap container visibility...");
+        const lapsContainer = document.getElementById("lapsContainer");
+        console.log("Laps container found:", lapsContainer ? "Yes" : "No");
+        if (lapsContainer) {
+          console.log("Laps container classes:", lapsContainer.className);
+        }
+      }
+    }, 2000);
+    
+  } catch (error) {
+    console.error("❌ Failed to initialize application:", error);
+    // Retry initialization after delay
+    setTimeout(initializeApp, 2000);
+  }
 
-  // Load first quote with slight delay for better UX
-  setTimeout(() => {
-    window.quotesManager.loadQuote();
-  }, 1500);
+  // Enhanced error reporting
+  window.addEventListener('error', (e) => {
+    console.error('💥 Global error:', e.error);
+  });
+
+  console.log("✅ Application fully initialized");
+}
+
+// Multiple initialization strategies for maximum compatibility
+document.addEventListener("DOMContentLoaded", initializeApp);
+
+// Fallback for late initialization
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initializeApp);
+} else if (document.readyState === 'interactive' || document.readyState === 'complete') {
+  // DOM already loaded
+  setTimeout(initializeApp, 100);
+}
+
+// Final fallback
+window.addEventListener('load', () => {
+  if (!window.stopwatch || !window.quotesManager) {
+    console.log("🔄 Final fallback initialization...");
+    initializeApp();
+  }
 });

@@ -3,11 +3,13 @@
 <div align="center">
 
 ![Aesthetic Stopwatch](https://img.shields.io/badge/Aesthetic-Stopwatch-66a6ff?style=for-the-badge&logo=clockify&logoColor=white)
-![Version](https://img.shields.io/badge/Version-1.0.0-success?style=for-the-badge)
+![Version](https://img.shields.io/badge/Version-2.0.0-success?style=for-the-badge)
 ![PWA Ready](https://img.shields.io/badge/PWA-Ready-purple?style=for-the-badge)
 ![Mobile Optimized](https://img.shields.io/badge/Mobile-Optimized-orange?style=for-the-badge)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind-CSS-38bdf8?style=for-the-badge&logo=tailwindcss&logoColor=white)
 
-**A beautiful, minimal, glassmorphic stopwatch for timing, productivity, and workouts**
+**A beautiful, ultra-responsive, glassmorphic stopwatch with flawless functionality**
+
 
 [🚀 Live Demo](https://stopwatch.chinmayjha.tech) • [📱 Install as App](https://stopwatch.chinmayjha.tech) • [🐛 Report Bug](https://github.com/chinmayjha/Aesthetic-Stopwatch/issues)
 
@@ -19,30 +21,57 @@
 
 ### 🎨 **Design & Experience**
 - **Glassmorphic UI** – Modern blur, transparency, and beautiful gradients
-- **Responsive Design** – Mobile-first, optimized for phones, tablets (landscape/portrait), and desktops
-- **Custom Backgrounds** – Upload your own images or use presets
-- **Modern Share Modal** – Redesigned, with social and copy options
-- **Smooth Animations** – 60fps performance
+- **Ultra-Responsive Design** – Tailwind CSS integration, perfect for 320px+ screens to 4K displays
+- **Flawless Mobile Experience** – Ultra-small device support, enhanced touch interactions
+- **Custom Backgrounds** – Upload your own images or use beautiful presets
+- **Enhanced Animations** – Smooth micro-interactions with visual feedback
+- **Professional Typography** – Space Grotesk, Inter, and JetBrains Mono fonts
 
 ### ⚡ **Performance & PWA**
-- **PWA Support** – Install as a native app
-- **Offline Ready** – Works without internet
-- **Battery Optimization** – Smart power management
-- **Keyboard Shortcuts** – Fast navigation
-- **Audio & Haptics** – Rich feedback
+- **PWA Support** – Install as a native app with service worker
+- **Offline Ready** – Works without internet connection
+- **Lightning Fast** – Optimized rendering with minimal DOM manipulation  
+- **Enhanced Keyboard Shortcuts** – Space, L, R, Q, ESC with visual feedback
+- **Robust Error Handling** – Comprehensive debugging and recovery systems
+- **Battery Optimization** – Smart power management and reduced motion support
 
 ### 💡 **Motivational Quotes**
-- **Live Quotes** – Fetches motivational quotes from a live API (with fallback)
-- **Hide/Show Quotes** – Toggle motivational quotes in the settings panel (Display Options)
+- **Multi-API Support** – thequoteshub.com, zenquotes.io, adviceslip.com with smart fallbacks
+- **Reliable Loading** – Enhanced error handling, retry mechanisms, and local quotes backup
+- **Loading Indicators** – Visual feedback during quote fetching
+- **Keyboard Refresh** – Press 'Q' to get a new quote instantly
+- **Auto-Refresh** – Fresh quotes every 15 minutes
 
 ### 🎯 **Core Functionality**
-- ⏱️ **Precision Timing** – Accurate to milliseconds
-- 🏁 **Lap Tracking** – Record and compare splits
-- 📤 **Lap Actions** – Copy to clipboard, export CSV, clear all
-- 🎵 **Sound Effects** – Customizable audio feedback
-- 📳 **Haptic Feedback** – Tactile responses on mobile
-- ⌨️ **Keyboard Controls** – Space (start/stop), R (reset), L (lap)
-- 📱 **Share Results** – Easy sharing with one click
+- ⏱️ **Precision Timing** – High-resolution performance.now() timing, accurate to microseconds
+- 🏁 **Enhanced Lap Tracking** – Beautiful Tailwind CSS design with smooth animations
+- 📊 **Smart Lap Display** – Auto-show/hide with proper visibility management
+- 📤 **Lap Actions** – Copy to clipboard, export CSV, clear all with enhanced UX
+- 🎵 **Sound Effects** – Customizable audio feedback for all actions
+- 📳 **Haptic Feedback** – Rich tactile responses on mobile devices
+- ⌨️ **Enhanced Keyboard Controls** – Space, L, R, Q, ESC with visual button feedback
+- 📱 **Improved Sharing** – Beautiful share modal with multiple options
+
+---
+
+## 🎉 **What's New in v2.0** ✨
+
+### 🔥 **Major Fixes & Enhancements**
+- ✅ **Fixed Quotes API** - Now works reliably with multiple API fallbacks
+- ✅ **Fixed Lap Visibility** - Laps now display properly with beautiful animations  
+- ✅ **Tailwind CSS Integration** - Ultra-responsive design for all screen sizes
+- ✅ **Enhanced Keyboard Shortcuts** - Added 'Q' for quote refresh with visual feedback
+- ✅ **Improved Error Handling** - Comprehensive debugging and recovery systems
+- ✅ **Better Mobile Experience** - Support for ultra-small devices (320px+)
+- ✅ **Loading Indicators** - Visual feedback for better user experience
+- ✅ **Performance Optimizations** - Faster, smoother, more reliable
+
+### 🚀 **Technical Improvements**
+- Multiple initialization strategies for maximum compatibility
+- Enhanced DOM element detection and fallback mechanisms
+- Improved CSS architecture with utility classes
+- Better accessibility and keyboard navigation
+- Robust service worker implementation
 
 ---
 
@@ -107,12 +136,15 @@ Aesthetic-Stopwatch/
 
 ### ⌨️ **Keyboard Shortcuts**
 
-| Key | Action |
-|-----|--------|
-| `Space` | Start/Stop timer |
-| `R` | Reset timer |
-| `L` | Add lap |
-| `Esc` | Close modals |
+| Key | Action | Visual Feedback |
+|-----|--------|-----------------|
+| `Space` | Start/Stop timer | ✅ Button animation |
+| `R` | Reset timer | ✅ Button animation |
+| `L` | Add lap (when running) | ✅ Button animation |
+| `Q` | **NEW**: Refresh quote | ✅ Loading indicator |
+| `Esc` | Close modals/panels | ✅ Smooth transitions |
+
+*All keyboard shortcuts now provide visual feedback with button press animations!*
 
 ### 🎨 **Customization**
 
@@ -127,10 +159,13 @@ Aesthetic-Stopwatch/
 
 ### 🏗️ **Architecture**
 
-- **Modular Design** - Organized class-based structure
-- **Modal Management** - Centralized system preventing conflicts
-- **Performance Monitoring** - Built-in metrics and error tracking
-- **Progressive Enhancement** - Works without JavaScript
+- **Modular Design** - Clean class-based structure with separation of concerns
+- **Enhanced Modal Management** - Centralized system preventing conflicts with focus trapping
+- **Robust Error Handling** - Comprehensive debugging, fallbacks, and recovery mechanisms
+- **Multi-API Integration** - Reliable quote loading with intelligent fallback systems
+- **Tailwind CSS Integration** - Modern utility-first styling with custom configurations
+- **Performance Monitoring** - Built-in metrics, error tracking, and optimization
+- **Progressive Enhancement** - Works gracefully with or without JavaScript
 
 ### 📊 **Browser Support**
 
@@ -144,8 +179,12 @@ Aesthetic-Stopwatch/
 ### ⚡ **Performance**
 
 - **Zero-lag UI**: Timer display throttled to once/sec rendering to avoid DOM thrash
-- **Accurate core**: High-res clock using performance.now() with drift-free pause/resume
-- **Work-efficient laps**: DocumentFragment + prepend for O(1) new laps
+- **Accurate core**: High-res clock using performance.now() with drift-free pause/resume  
+- **Efficient lap rendering**: DocumentFragment + prepend for O(1) new lap additions
+- **Smart initialization**: Multiple fallback strategies for maximum reliability
+- **Enhanced error recovery**: Automatic retry mechanisms for failed operations
+- **Optimized animations**: GPU-accelerated transforms with reduced motion support
+- **Memory efficient**: Proper event cleanup and garbage collection
 
 ---
 
@@ -192,6 +231,30 @@ npx terser assets/js/script.js -o dist/script.min.js
 
 ---
 
+## 🛠️ **Troubleshooting**
+
+### ❓ **Common Issues (Now Fixed!)**
+
+**Q: Quotes not loading?**  
+✅ **Fixed in v2.0**: Enhanced multi-API system with automatic fallbacks and retry mechanisms.
+
+**Q: Lap section not showing?**  
+✅ **Fixed in v2.0**: Added proper CSS classes and visibility management with Tailwind integration.
+
+**Q: Poor mobile experience?**  
+✅ **Fixed in v2.0**: Complete Tailwind CSS overhaul with ultra-responsive design for all screen sizes.
+
+**Q: Keyboard shortcuts not working?**  
+✅ **Enhanced in v2.0**: Improved event handling with visual feedback and better focus management.
+
+### 🔧 **Still having issues?**
+1. **Hard refresh**: Ctrl+F5 (Windows) or Cmd+Shift+R (Mac)
+2. **Clear cache**: Browser settings → Clear browsing data
+3. **Check console**: F12 → Console tab for any error messages
+4. **Report bug**: [Create an issue](https://github.com/chinmayjha/Aesthetic-Stopwatch/issues) with details
+
+---
+
 ## 🌟 Contributing
 
 We love contributions! Here's how you can help:
@@ -235,12 +298,20 @@ This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) 
 
 ## 🎯 Roadmap
 
+### ✅ **Recently Completed (v2.0)**
+- [x] 🔧 **Enhanced Quotes API** - Multi-source reliability with fallbacks
+- [x] 📱 **Ultra-Responsive Design** - Tailwind CSS integration 
+- [x] ⌨️ **Enhanced Keyboard Shortcuts** - Visual feedback system
+- [x] 🎨 **Improved Animations** - Smooth micro-interactions
+- [x] 🛡️ **Robust Error Handling** - Comprehensive debugging system
+
+### 🚀 **Coming Next**
 - [ ] 🌍 **Multi-language Support** - Internationalization
 - [ ] 📊 **Analytics Dashboard** - Timing insights and stats
 - [ ] 🔗 **Team Features** - Collaborative timing sessions
 - [ ] 🎨 **Theme Store** - Community-created themes
 - [ ] ⏰ **Preset Timers** - Pomodoro, workout intervals
-- [ ] 📱 **Mobile App** - Native iOS/Android versions
+- [ ] 📱 **Native Mobile App** - iOS/Android versions
 
 ---
 
