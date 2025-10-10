@@ -3,13 +3,12 @@
 <div align="center">
 
 ![Aesthetic Stopwatch](https://img.shields.io/badge/Aesthetic-Stopwatch-66a6ff?style=for-the-badge&logo=clockify&logoColor=white)
-![Version](https://img.shields.io/badge/Version-2.0.0-success?style=for-the-badge)
+![Version](https://img.shields.io/badge/Version-3.0.0-success?style=for-the-badge)
 ![PWA Ready](https://img.shields.io/badge/PWA-Ready-purple?style=for-the-badge)
 ![Mobile Optimized](https://img.shields.io/badge/Mobile-Optimized-orange?style=for-the-badge)
-![Tailwind CSS](https://img.shields.io/badge/Tailwind-CSS-38bdf8?style=for-the-badge&logo=tailwindcss&logoColor=white)
+![Fully Responsive](https://img.shields.io/badge/Responsive-100%25-38bdf8?style=for-the-badge)
 
-**A beautiful, ultra-responsive, glassmorphic stopwatch with flawless functionality**
-
+**A beautiful, premium glassmorphic stopwatch with seamless desktop expansion and perfect mobile experience**
 
 [🚀 Live Demo](https://stopwatch.chinmayjha.tech) • [📱 Install as App](https://stopwatch.chinmayjha.tech) • [🐛 Report Bug](https://github.com/chinmayjha/Aesthetic-Stopwatch/issues)
 
@@ -19,34 +18,34 @@
 
 ## ✨ Features
 
-### 🎨 **Design & Experience**
-- **Glassmorphic UI** – Modern blur, transparency, and beautiful gradients
-- **Ultra-Responsive Design** – Tailwind CSS integration, perfect for 320px+ screens to 4K displays
-- **Flawless Mobile Experience** – Ultra-small device support, enhanced touch interactions
-- **Custom Backgrounds** – Upload your own images or use beautiful presets
-- **Enhanced Animations** – Smooth micro-interactions with visual feedback
-- **Professional Typography** – Space Grotesk, Inter, and JetBrains Mono fonts
+### 🎨 **Premium Design & UX**
+- **Advanced Glassmorphism** – Multi-layer blur effects, premium gradients, and depth
+- **Desktop Expansion** – Properly scales from 320px mobile to 4K ultra-wide displays
+- **Fixed Background** – Beautiful gradient stays fixed during scroll and expansion
+- **Smooth Animations** – 60fps transitions with GPU acceleration
+- **Mobile-First Responsive** – Lap section adapts perfectly: 50vh mobile overlay, centered desktop
+- **Professional Typography** – Space Grotesk, Inter, Poppins, and JetBrains Mono fonts
 
 ### ⚡ **Performance & PWA**
 - **PWA Support** – Install as a native app with service worker
 - **Offline Ready** – Works without internet connection
-- **Lightning Fast** – Optimized rendering with minimal DOM manipulation  
+- **Lightning Fast** – Optimized rendering with CSS containment and transforms
+- **Smart Scrolling** – Smooth scroll behavior with proper overflow handling
 - **Enhanced Keyboard Shortcuts** – Space, L, R, Q, ESC with visual feedback
-- **Robust Error Handling** – Comprehensive debugging and recovery systems
-- **Battery Optimization** – Smart power management and reduced motion support
+- **Battery Optimization** – Reduced motion support and efficient animations
 
 ### 💡 **Motivational Quotes**
 - **Multi-API Support** – thequoteshub.com, zenquotes.io, adviceslip.com with smart fallbacks
-- **Reliable Loading** – Enhanced error handling, retry mechanisms, and local quotes backup
+- **Minimal Design** – Compact, elegant quote display that doesn't distract
 - **Loading Indicators** – Visual feedback during quote fetching
 - **Keyboard Refresh** – Press 'Q' to get a new quote instantly
 - **Auto-Refresh** – Fresh quotes every 15 minutes
 
 ### 🎯 **Core Functionality**
-- ⏱️ **Precision Timing** – High-resolution performance.now() timing, accurate to microseconds
-- 🏁 **Enhanced Lap Tracking** – Beautiful Tailwind CSS design with smooth animations
-- 📊 **Smart Lap Display** – Auto-show/hide with proper visibility management
-- 📤 **Lap Actions** – Copy to clipboard, export CSV, clear all with enhanced UX
+- ⏱️ **Precision Timing** – High-resolution performance.now() timing
+- 🏁 **Enhanced Lap Tracking** – Beautiful card design with smooth reveal animations
+- 📊 **Smart Lap Display** – Auto-show/hide with proper visibility and scrolling
+- 📤 **Lap Actions** – Copy to clipboard, export CSV, clear all
 - 🎵 **Sound Effects** – Customizable audio feedback for all actions
 - 📳 **Haptic Feedback** – Rich tactile responses on mobile devices
 - ⌨️ **Enhanced Keyboard Controls** – Space, L, R, Q, ESC with visual button feedback
@@ -54,24 +53,47 @@
 
 ---
 
-## 🎉 **What's New in v2.0** ✨
+## 🎉 **What's New in v3.0** ✨
 
-### 🔥 **Major Fixes & Enhancements**
-- ✅ **Fixed Quotes API** - Now works reliably with multiple API fallbacks
-- ✅ **Fixed Lap Visibility** - Laps now display properly with beautiful animations  
-- ✅ **Tailwind CSS Integration** - Ultra-responsive design for all screen sizes
-- ✅ **Enhanced Keyboard Shortcuts** - Added 'Q' for quote refresh with visual feedback
-- ✅ **Improved Error Handling** - Comprehensive debugging and recovery systems
-- ✅ **Better Mobile Experience** - Support for ultra-small devices (320px+)
-- ✅ **Loading Indicators** - Visual feedback for better user experience
-- ✅ **Performance Optimizations** - Faster, smoother, more reliable
+### � **Major Enhancements**
 
-### 🚀 **Technical Improvements**
-- Multiple initialization strategies for maximum compatibility
-- Enhanced DOM element detection and fallback mechanisms
-- Improved CSS architecture with utility classes
-- Better accessibility and keyboard navigation
-- Robust service worker implementation
+#### 🖥️ **Desktop Expansion & Scrolling**
+- ✅ **Fixed Scroll Issue** – Body now properly scrolls to reveal lap section
+- ✅ **Desktop Width Expansion** – Scales beautifully from 1024px to 4K displays
+- ✅ **Fixed Background** – Gradient stays perfectly fixed during scroll and expansion
+- ✅ **Responsive Breakpoints** – Optimized layouts for mobile (320px), tablet (768px), desktop (1024px+), and ultra-wide (1920px+)
+
+#### 📱 **Mobile Improvements**
+- ✅ **Smart Lap Overlay** – 50vh mobile panel keeps buttons visible
+- ✅ **Better Touch Experience** – Lap section doesn't cover controls
+- ✅ **Smooth Animations** – Enhanced transitions with GPU acceleration
+- ✅ **Proper Spacing** – Content never gets cut off or hidden
+
+#### 🎨 **Visual Enhancements**
+- ✅ **Quote Section Restored** – Minimal, elegant design at 680px max-width
+- ✅ **Improved Glassmorphism** – Multi-layer blur and depth effects
+- ✅ **Smooth Scrolling** – Beautiful scroll behavior across all devices
+- ✅ **Enhanced Animations** – Lap section reveal with transform effects
+
+### �️ **Technical Improvements**
+- Removed restrictive `min(90vw, ...)` width constraints
+- Implemented proper overflow handling (body: auto, main: visible)
+- Added emergency CSS overrides for desktop layouts
+- Fixed z-index stacking for mobile overlays
+- Optimized performance with CSS containment and transforms
+
+---
+
+## 📐 **Responsive Design**
+
+### Screen Size Support
+| Device | Width | Lap Section | Timer Max-Width |
+|--------|-------|-------------|-----------------|
+| 📱 Mobile | 320-599px | Fixed 50vh overlay | 90vw |
+| 📱 Tablet | 600-900px | 90vw centered | 90vw |
+| 💻 Desktop | 1024-1439px | 1000px centered | 1200px |
+| 🖥️ Large Desktop | 1440-1919px | 1100px centered | 1300px |
+| 🖥️ Ultra-wide | 1920px+ | 1300px centered | 1500px |
 
 ---
 

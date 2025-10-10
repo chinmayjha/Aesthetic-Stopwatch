@@ -21,6 +21,15 @@
 // ================================================================================================
 // PWA SERVICE WORKER REGISTRATION & INSTALL PROMPT
 // ================================================================================================
+// Silence console output in production per requirements
+const __DEBUG__ = false;
+if (!__DEBUG__) {
+  ["log", "warn", "error"].forEach((m) => {
+    try {
+      console[m] = () => {};
+    } catch {}
+  });
+}
 let deferredPrompt;
 
 // Listen for install prompt
@@ -155,29 +164,34 @@ function debounce(func, wait) {
   };
 }
 
+// Global toast utility (reusable across modules)
+function showToast(message) {
+  try {
+    const toast = document.createElement("div");
+    toast.className = "toast-notification";
+    toast.textContent = message;
+    // Minimal inline style fallback if CSS missing
+    toast.style.position = "fixed";
+    toast.style.bottom = "1.25rem";
+    toast.style.left = "50%";
+    toast.style.transform = "translateX(-50%)";
+    toast.style.background = "rgba(0,0,0,0.75)";
+    toast.style.color = "#fff";
+    toast.style.padding = "10px 14px";
+    toast.style.borderRadius = "10px";
+    toast.style.zIndex = "9999";
+    toast.style.opacity = "0";
+    toast.style.transition = "opacity .2s ease";
+    document.body.appendChild(toast);
+    requestAnimationFrame(() => (toast.style.opacity = "1"));
+    setTimeout(() => {
+      toast.style.opacity = "0";
+      setTimeout(() => toast.remove(), 250);
+    }, 1800);
+  } catch {}
+}
+
 // ================================================================================================
-// QUOTE TOGGLE CHECKBOX (Display Options)
-// ================================================================================================
-document.addEventListener("DOMContentLoaded", () => {
-  const quoteContainer = document.getElementById("quoteContainer");
-  const showQuotesToggle = document.getElementById("showQuotesToggle");
-  if (showQuotesToggle && quoteContainer) {
-    // Restore state from localStorage (default: true)
-    const showQuotes = localStorage.getItem("showQuotes");
-    if (showQuotes === null) {
-      showQuotesToggle.checked = true;
-      quoteContainer.style.display = "";
-    } else {
-      showQuotesToggle.checked = showQuotes === "true";
-      quoteContainer.style.display = showQuotesToggle.checked ? "" : "none";
-    }
-    showQuotesToggle.addEventListener("change", () => {
-      const shouldShow = showQuotesToggle.checked;
-      quoteContainer.style.display = shouldShow ? "" : "none";
-      localStorage.setItem("showQuotes", shouldShow);
-    });
-  }
-});
 // ================================================================================================
 // MOTIVATIONAL QUOTES API
 // ================================================================================================
@@ -185,70 +199,178 @@ class QuotesManager {
   constructor() {
     this.quotes = [
       // Motivation & Success
-      { text: "The way to get started is to quit talking and begin doing.", author: "Walt Disney" },
-      { text: "Don't let yesterday take up too much of today.", author: "Will Rogers" },
-      { text: "You learn more from failure than from success.", author: "Anonymous" },
-      { text: "It's not whether you get knocked down, it's whether you get up.", author: "Vince Lombardi" },
-      { text: "Success is not final, failure is not fatal: it is the courage to continue that counts.", author: "Winston Churchill" },
-      { text: "The future belongs to those who believe in the beauty of their dreams.", author: "Eleanor Roosevelt" },
-      { text: "Your time is limited, don't waste it living someone else's life.", author: "Steve Jobs" },
-      { text: "The only impossible journey is the one you never begin.", author: "Tony Robbins" },
-      { text: "Believe you can and you're halfway there.", author: "Theodore Roosevelt" },
-      { text: "Don't watch the clock; do what it does. Keep going.", author: "Sam Levenson" },
-      
-      // Productivity & Focus  
-      { text: "Focus on being productive instead of busy.", author: "Tim Ferriss" },
+      {
+        text: "The way to get started is to quit talking and begin doing.",
+        author: "Walt Disney",
+      },
+      {
+        text: "Don't let yesterday take up too much of today.",
+        author: "Will Rogers",
+      },
+      {
+        text: "You learn more from failure than from success.",
+        author: "Anonymous",
+      },
+      {
+        text: "It's not whether you get knocked down, it's whether you get up.",
+        author: "Vince Lombardi",
+      },
+      {
+        text: "Success is not final, failure is not fatal: it is the courage to continue that counts.",
+        author: "Winston Churchill",
+      },
+      {
+        text: "The future belongs to those who believe in the beauty of their dreams.",
+        author: "Eleanor Roosevelt",
+      },
+      {
+        text: "Your time is limited, don't waste it living someone else's life.",
+        author: "Steve Jobs",
+      },
+      {
+        text: "The only impossible journey is the one you never begin.",
+        author: "Tony Robbins",
+      },
+      {
+        text: "Believe you can and you're halfway there.",
+        author: "Theodore Roosevelt",
+      },
+      {
+        text: "Don't watch the clock; do what it does. Keep going.",
+        author: "Sam Levenson",
+      },
+
+      // Productivity & Focus
+      {
+        text: "Focus on being productive instead of busy.",
+        author: "Tim Ferriss",
+      },
       { text: "Progress, not perfection, is the goal.", author: "Anonymous" },
       { text: "Every moment is a fresh beginning.", author: "T.S. Eliot" },
-      { text: "The expert in anything was once a beginner.", author: "Helen Hayes" },
-      { text: "Time is what we want most, but what we use worst.", author: "William Penn" },
-      { text: "You may delay, but time will not.", author: "Benjamin Franklin" },
-      { text: "The key is not to prioritize what's on your schedule, but to schedule your priorities.", author: "Stephen Covey" },
-      
+      {
+        text: "The expert in anything was once a beginner.",
+        author: "Helen Hayes",
+      },
+      {
+        text: "Time is what we want most, but what we use worst.",
+        author: "William Penn",
+      },
+      {
+        text: "You may delay, but time will not.",
+        author: "Benjamin Franklin",
+      },
+      {
+        text: "The key is not to prioritize what's on your schedule, but to schedule your priorities.",
+        author: "Stephen Covey",
+      },
+
       // Perseverance & Growth
-      { text: "It does not matter how slowly you go as long as you do not stop.", author: "Confucius" },
-      { text: "Great things never come from comfort zones.", author: "Anonymous" },
-      { text: "The only way to do great work is to love what you do.", author: "Steve Jobs" },
-      { text: "Innovation distinguishes between a leader and a follower.", author: "Steve Jobs" },
-      { text: "The best time to plant a tree was 20 years ago. The second best time is now.", author: "Chinese Proverb" },
-      { text: "A year from now you may wish you had started today.", author: "Karen Lamb" },
-      { text: "The only person you are destined to become is the person you decide to be.", author: "Ralph Waldo Emerson" },
-      
+      {
+        text: "It does not matter how slowly you go as long as you do not stop.",
+        author: "Confucius",
+      },
+      {
+        text: "Great things never come from comfort zones.",
+        author: "Anonymous",
+      },
+      {
+        text: "The only way to do great work is to love what you do.",
+        author: "Steve Jobs",
+      },
+      {
+        text: "Innovation distinguishes between a leader and a follower.",
+        author: "Steve Jobs",
+      },
+      {
+        text: "The best time to plant a tree was 20 years ago. The second best time is now.",
+        author: "Chinese Proverb",
+      },
+      {
+        text: "A year from now you may wish you had started today.",
+        author: "Karen Lamb",
+      },
+      {
+        text: "The only person you are destined to become is the person you decide to be.",
+        author: "Ralph Waldo Emerson",
+      },
+
       // Mindfulness & Present
-      { text: "Yesterday is history, tomorrow is a mystery, today is a gift.", author: "Eleanor Roosevelt" },
-      { text: "Be yourself; everyone else is already taken.", author: "Oscar Wilde" },
-      { text: "In the middle of difficulty lies opportunity.", author: "Albert Einstein" },
-      { text: "Life is what happens to you while you're busy making other plans.", author: "John Lennon" },
-      { text: "The present moment is the only time over which we have dominion.", author: "Thich Nhat Hanh" },
-      { text: "Do not dwell in the past, do not dream of the future, concentrate the mind on the present moment.", author: "Buddha" },
-      
+      {
+        text: "Yesterday is history, tomorrow is a mystery, today is a gift.",
+        author: "Eleanor Roosevelt",
+      },
+      {
+        text: "Be yourself; everyone else is already taken.",
+        author: "Oscar Wilde",
+      },
+      {
+        text: "In the middle of difficulty lies opportunity.",
+        author: "Albert Einstein",
+      },
+      {
+        text: "Life is what happens to you while you're busy making other plans.",
+        author: "John Lennon",
+      },
+      {
+        text: "The present moment is the only time over which we have dominion.",
+        author: "Thich Nhat Hanh",
+      },
+      {
+        text: "Do not dwell in the past, do not dream of the future, concentrate the mind on the present moment.",
+        author: "Buddha",
+      },
+
       // Achievement & Excellence
-      { text: "Excellence is never an accident. It is always the result of high intention.", author: "Aristotle" },
+      {
+        text: "Excellence is never an accident. It is always the result of high intention.",
+        author: "Aristotle",
+      },
       { text: "Quality is not an act, it is a habit.", author: "Aristotle" },
-      { text: "Strive not to be a success, but rather to be of value.", author: "Albert Einstein" },
-      { text: "The difference between ordinary and extraordinary is that little extra.", author: "Jimmy Johnson" },
-      { text: "Champions aren't made in gyms. Champions are made from something deep inside them.", author: "Muhammad Ali" },
-      
+      {
+        text: "Strive not to be a success, but rather to be of value.",
+        author: "Albert Einstein",
+      },
+      {
+        text: "The difference between ordinary and extraordinary is that little extra.",
+        author: "Jimmy Johnson",
+      },
+      {
+        text: "Champions aren't made in gyms. Champions are made from something deep inside them.",
+        author: "Muhammad Ali",
+      },
+
       // Wisdom & Life
-      { text: "The journey of a thousand miles begins with one step.", author: "Lao Tzu" },
-      { text: "What lies behind us and what lies before us are tiny matters compared to what lies within us.", author: "Ralph Waldo Emerson" },
+      {
+        text: "The journey of a thousand miles begins with one step.",
+        author: "Lao Tzu",
+      },
+      {
+        text: "What lies behind us and what lies before us are tiny matters compared to what lies within us.",
+        author: "Ralph Waldo Emerson",
+      },
       { text: "Turn your wounds into wisdom.", author: "Oprah Winfrey" },
-      { text: "Life is 10% what happens to you and 90% how you react to it.", author: "Charles R. Swindoll" },
-      { text: "The mind is everything. What you think you become.", author: "Buddha" }
+      {
+        text: "Life is 10% what happens to you and 90% how you react to it.",
+        author: "Charles R. Swindoll",
+      },
+      {
+        text: "The mind is everything. What you think you become.",
+        author: "Buddha",
+      },
     ];
-    
+
     this.currentQuoteIndex = Math.floor(Math.random() * this.quotes.length);
     this.init();
   }
 
   init() {
     this.loadRandomQuote();
-    
-    // Auto-refresh quote every 2 minutes for variety
+
+    // Auto-refresh quote every 5 minutes for variety
     setInterval(() => {
       this.loadRandomQuote();
-    }, 120000);
-    
+    }, 300000);
+
     // Load new quote on scroll
     this.setupScrollQuotes();
   }
@@ -256,10 +378,10 @@ class QuotesManager {
   setupScrollQuotes() {
     let scrollTimeout;
     let lastScrollY = 0;
-    
-    window.addEventListener('scroll', () => {
+
+    window.addEventListener("scroll", () => {
       const currentScrollY = window.scrollY;
-      
+
       // Only trigger on significant scroll movement
       if (Math.abs(currentScrollY - lastScrollY) > 50) {
         clearTimeout(scrollTimeout);
@@ -286,11 +408,15 @@ class QuotesManager {
     do {
       newIndex = Math.floor(Math.random() * this.quotes.length);
     } while (newIndex === this.currentQuoteIndex && this.quotes.length > 1);
-    
+
     this.currentQuoteIndex = newIndex;
     const quote = this.quotes[this.currentQuoteIndex];
-    
-    console.log(`✨ Loading random quote: "${quote.text.substring(0, 30)}..." - ${quote.author}`);
+
+    console.log(
+      `✨ Loading random quote: "${quote.text.substring(0, 30)}..." - ${
+        quote.author
+      }`
+    );
     this.displayQuote(quote.text, quote.author);
   }
 
@@ -537,19 +663,18 @@ document.addEventListener("DOMContentLoaded", () => {
 // ENHANCED FAB & MODAL MANAGEMENT
 // ================================================================================================
 function initializeFABButtons() {
-  console.log("🎯 Initializing FAB Buttons...");
-  
+  // Initialize FAB Buttons and modals; with Web Share API support
+
   // Share Modal functionality
   const shareBtn = document.getElementById("shareBtn");
   const shareModal = document.getElementById("shareModal");
   const shareOverlay = document.getElementById("shareOverlay");
   const closeShareBtn = document.getElementById("closeShareBtn");
+  const supportsWebShare =
+    typeof navigator !== "undefined" && !!navigator.share;
 
-  console.log("🔗 Share button elements check:");
-  console.log("  shareBtn found:", !!shareBtn);
-  console.log("  shareModal found:", !!shareModal);
-  console.log("  shareOverlay found:", !!shareOverlay);
-  console.log("  closeShareBtn found:", !!closeShareBtn);
+  // Hide or disable share button if not supported
+  // Keep share button visible; if Web Share unsupported, fallback to custom modal
 
   // Settings Modal functionality
   const settingsToggle = document.getElementById("settingsToggle");
@@ -557,11 +682,7 @@ function initializeFABButtons() {
   const settingsOverlay = document.getElementById("settingsOverlay");
   const closeSettingsBtn = document.getElementById("closeSettingsBtn");
 
-  console.log("⚙️ Settings button elements check:");
-  console.log("  settingsToggle found:", !!settingsToggle);
-  console.log("  settingsPanel found:", !!settingsPanel);
-  console.log("  settingsOverlay found:", !!settingsOverlay);
-  console.log("  closeSettingsBtn found:", !!closeSettingsBtn);
+  // No-op logs removed
 
   // Register Share Modal with modalManager
   if (window.modalManager && shareModal && shareOverlay) {
@@ -571,20 +692,19 @@ function initializeFABButtons() {
         shareOverlay.classList.add("active");
         shareModal.classList.add("active");
         document.body.classList.add("modal-open");
-        console.log("✅ Share modal opened via modalManager");
+        // opened
       },
       () => {
         shareModal.classList.remove("active");
         shareOverlay.classList.remove("active");
         document.body.classList.remove("modal-open");
-        console.log("✅ Share modal closed via modalManager");
+        // closed
       }
     );
   }
 
   // Share Modal Functions
   function openShareModal() {
-    console.log("📤 Opening share modal");
     if (window.modalManager) {
       modalManager.openModal("shareModal");
     } else {
@@ -593,13 +713,12 @@ function initializeFABButtons() {
         shareOverlay.classList.add("active");
         shareModal.classList.add("active");
         document.body.classList.add("modal-open");
-        console.log("✅ Share modal opened (fallback)");
+        // opened
       }
     }
   }
 
   function closeShareModal() {
-    console.log("❌ Closing share modal");
     if (window.modalManager) {
       modalManager.closeModal("shareModal");
     } else {
@@ -608,14 +727,13 @@ function initializeFABButtons() {
         shareModal.classList.remove("active");
         shareOverlay.classList.remove("active");
         document.body.classList.remove("modal-open");
-        console.log("✅ Share modal closed (fallback)");
+        // closed
       }
     }
   }
 
   // Settings Panel Functions - integrate with modalManager
   function openSettingsPanel() {
-    console.log("⚙️ Opening settings panel");
     if (window.modalManager) {
       modalManager.openModal("settingsPanel");
     } else {
@@ -624,13 +742,12 @@ function initializeFABButtons() {
         settingsOverlay.classList.add("show");
         settingsPanel.classList.add("show");
         document.body.classList.add("modal-open");
-        console.log("✅ Settings panel opened (fallback)");
+        // opened
       }
     }
   }
 
   function closeSettingsPanel() {
-    console.log("❌ Closing settings panel");
     if (window.modalManager) {
       modalManager.closeModal("settingsPanel");
     } else {
@@ -639,44 +756,43 @@ function initializeFABButtons() {
         settingsPanel.classList.remove("show");
         settingsOverlay.classList.remove("show");
         document.body.classList.remove("modal-open");
-        console.log("✅ Settings panel closed (fallback)");
+        // closed
       }
     }
   }
 
-  // Bind Share Button Events
-  if (shareBtn) {
-    // Remove any existing listeners by cloning
-    const newShareBtn = shareBtn.cloneNode(true);
-    shareBtn.parentNode.replaceChild(newShareBtn, shareBtn);
-    
-    newShareBtn.addEventListener("click", (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-      console.log("🖱️ Share button clicked");
-      openShareModal();
-    });
-    console.log("✅ Share button event bound");
-  } else {
-    console.error("❌ Share button not found!");
-  }
 
-  // Bind Settings Button Events
-  if (settingsToggle) {
-    // Remove any existing listeners by cloning
-    const newSettingsBtn = settingsToggle.cloneNode(true);
-    settingsToggle.parentNode.replaceChild(newSettingsBtn, settingsToggle);
-    
-    newSettingsBtn.addEventListener("click", (e) => {
+  // Robust event delegation for share/settings buttons
+  document.addEventListener("click", async (e) => {
+    const shareBtn = e.target.closest("#shareBtn");
+    if (shareBtn) {
       e.preventDefault();
       e.stopPropagation();
-      console.log("🖱️ Settings button clicked");
+      if (typeof supportsWebShare !== "undefined" && supportsWebShare && window.stopwatch) {
+        try {
+          const currentTime = window.stopwatch.formatTime(window.stopwatch.elapsedTime);
+          await navigator.share({
+            title: "My Stopwatch Time",
+            text: `Time: ${currentTime}`,
+            url: window.location.href,
+          });
+          showToast("Shared successfully");
+        } catch (err) {
+          showToast("Share canceled or failed");
+        }
+      } else {
+        openShareModal();
+      }
+      return;
+    }
+    const settingsBtn = e.target.closest("#settingsToggle");
+    if (settingsBtn) {
+      e.preventDefault();
+      e.stopPropagation();
       openSettingsPanel();
-    });
-    console.log("✅ Settings button event bound");
-  } else {
-    console.error("❌ Settings button not found!");
-  }
+      return;
+    }
+  });
 
   // Bind Close Button Events
   if (closeShareBtn) {
@@ -695,53 +811,27 @@ function initializeFABButtons() {
   // Keyboard navigation support
   document.addEventListener("keydown", (e) => {
     if (e.key === "Escape") {
-        // Let modalManager handle ESC key if available, otherwise handle directly
-        if (window.modalManager && modalManager.hasActiveModal) {
-          // modalManager should handle this globally
-          return;
-        }
-      
-        // Fallback: Close active modals on Escape
-        if (shareModal && shareModal.classList.contains("active")) {
-          closeShareModal();
-        }
-        if (settingsPanel && settingsPanel.classList.contains("show")) {
-          closeSettingsPanel();
-        }
+      // Let modalManager handle ESC key if available, otherwise handle directly
+      if (window.modalManager && modalManager.hasActiveModal) {
+        // modalManager should handle this globally
+        return;
+      }
+
+      // Fallback: Close active modals on Escape
+      if (shareModal && shareModal.classList.contains("active")) {
+        closeShareModal();
+      }
+      if (settingsPanel && settingsPanel.classList.contains("show")) {
+        closeSettingsPanel();
+      }
     }
   });
 
-  console.log("🎯 FAB buttons initialization complete");
+  // complete
 
-    // Add extra safety check and re-bind if needed
-    setTimeout(() => {
-      const currentShareBtn = document.getElementById("shareBtn");
-      const currentSettingsBtn = document.getElementById("settingsToggle");
-    
-      if (currentShareBtn && !currentShareBtn.hasAttribute("data-fab-initialized")) {
-        console.log("⚠️ Re-binding share button...");
-        currentShareBtn.addEventListener("click", (e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          console.log("🖱️ Share button clicked (re-bound)");
-          openShareModal();
-        });
-        currentShareBtn.setAttribute("data-fab-initialized", "true");
-      }
-    
-      if (currentSettingsBtn && !currentSettingsBtn.hasAttribute("data-fab-initialized")) {
-        console.log("⚠️ Re-binding settings button...");
-        currentSettingsBtn.addEventListener("click", (e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          console.log("🖱️ Settings button clicked (re-bound)");
-          openSettingsPanel();
-        });
-        currentSettingsBtn.setAttribute("data-fab-initialized", "true");
-      }
-    }, 1000);
+  // No need for setTimeout rebinding or cloneNode with event delegation
 
-    // Copy URL functionality
+  // Copy URL functionality
   const copyUrlBtn = document.getElementById("copyUrlBtn");
   if (copyUrlBtn) {
     copyUrlBtn.addEventListener("click", async () => {
@@ -753,62 +843,59 @@ function initializeFABButtons() {
         // Fallback for browsers without clipboard API
         const shareUrl = document.getElementById("shareUrl");
         if (shareUrl) {
+          shareUrl.value = url;
+          shareUrl.style.display = "block";
           shareUrl.select();
-          document.execCommand("copy");
+          shareUrl.setSelectionRange(0, url.length);
+          try {
+            document.execCommand("copy");
+            showToast("Link copied to clipboard!");
+          } catch (err2) {
+            showToast("Copy failed. Please copy manually.");
+          }
+          shareUrl.style.display = "none";
+        } else {
+          showToast("Copy failed. Please copy manually.");
         }
-        showToast("Link copied to clipboard!");
       }
     });
   }
 }
 
-  // Social sharing functionality
-  const socialBtns = document.querySelectorAll(".social-btn");
-  socialBtns.forEach((btn) => {
-    btn.addEventListener("click", () => {
-      const platform = btn.dataset.platform;
-      const url = "https://stopwatch.chinmayjha.tech/";
-      const text = "Check out this beautiful aesthetic stopwatch!";
+// Social sharing functionality
+const socialBtns = document.querySelectorAll(".social-btn");
+socialBtns.forEach((btn) => {
+  btn.addEventListener("click", () => {
+    const platform = btn.dataset.platform;
+    const url = "https://stopwatch.chinmayjha.tech/";
+    const text = "Check out this beautiful aesthetic stopwatch!";
 
-      let shareUrl = "";
-      switch (platform) {
-        case "twitter":
-          shareUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(
-            text
-          )}&url=${encodeURIComponent(url)}`;
-          break;
-        case "whatsapp":
-          shareUrl = `https://wa.me/?text=${encodeURIComponent(
-            text + " " + url
-          )}`;
-          break;
-        case "telegram":
-          shareUrl = `https://t.me/share/url?url=${encodeURIComponent(
-            url
-          )}&text=${encodeURIComponent(text)}`;
-          break;
-      }
+    let shareUrl = "";
+    switch (platform) {
+      case "twitter":
+        shareUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(
+          text
+        )}&url=${encodeURIComponent(url)}`;
+        break;
+      case "whatsapp":
+        shareUrl = `https://wa.me/?text=${encodeURIComponent(
+          text + " " + url
+        )}`;
+        break;
+      case "telegram":
+        shareUrl = `https://t.me/share/url?url=${encodeURIComponent(
+          url
+        )}&text=${encodeURIComponent(text)}`;
+        break;
+    }
 
-      if (shareUrl) {
-        window.open(shareUrl, "_blank", "width=600,height=400");
-      }
-    });
+    if (shareUrl) {
+      window.open(shareUrl, "_blank", "width=600,height=400");
+    }
   });
+});
 
-  // Toast notification function
-  function showToast(message) {
-    const toast = document.createElement("div");
-    toast.className = "toast-notification";
-    toast.textContent = message;
-    document.body.appendChild(toast);
-
-    setTimeout(() => toast.classList.add("show"), 100);
-    setTimeout(() => {
-      toast.classList.remove("show");
-      setTimeout(() => document.body.removeChild(toast), 300);
-    }, 2000);
-  }
-
+// moved showToast to global utility above
 
 // ================================================================================================
 // DEVELOPER MODAL MANAGEMENT
@@ -889,10 +976,13 @@ class Stopwatch {
     this.startPauseIcon = document.getElementById("startPauseIcon");
     this.lapsContainer = document.getElementById("lapsContainer");
     this.lapsList = document.getElementById("lapsList");
-    
+
     // Debug element finding
     console.log("🔍 Element check:");
-    console.log("  lapsContainer:", this.lapsContainer ? "✅ Found" : "❌ Missing");
+    console.log(
+      "  lapsContainer:",
+      this.lapsContainer ? "✅ Found" : "❌ Missing"
+    );
     console.log("  lapsList:", this.lapsList ? "✅ Found" : "❌ Missing");
 
     // Settings elements
@@ -921,9 +1011,9 @@ class Stopwatch {
 
   bindEvents() {
     // Stopwatch controls
-    this.startPauseBtn.addEventListener("click", () => this.toggleStopwatch());
-    this.lapBtn.addEventListener("click", () => this.addLap());
-    this.resetBtn.addEventListener("click", () => this.reset());
+    this.startPauseBtn?.addEventListener("click", () => this.toggleStopwatch());
+    this.lapBtn?.addEventListener("click", () => this.addLap());
+    this.resetBtn?.addEventListener("click", () => this.reset());
 
     // Settings panel - handled by FAB initialization
 
@@ -931,9 +1021,9 @@ class Stopwatch {
     document.addEventListener("keydown", (e) => this.handleKeypress(e));
 
     // Prevent settings panel from closing when clicking inside
-    this.settingsPanel.addEventListener("click", (e) => e.stopPropagation());
+    this.settingsPanel?.addEventListener("click", (e) => e.stopPropagation());
     // Trap focus inside settings panel
-    this.settingsPanel.addEventListener("keydown", (e) => {
+    this.settingsPanel?.addEventListener("keydown", (e) => {
       if (e.key === "Tab") {
         const focusable = this.settingsPanel.querySelectorAll(
           'button, [tabindex]:not([tabindex="-1"])'
@@ -958,7 +1048,7 @@ class Stopwatch {
   initializeUI() {
     this.updateDisplay(true);
     this.updateButtons();
-    if (this.lapsContainer) this.lapsContainer.style.display = "none";
+    if (this.lapsContainer) this.lapsContainer.classList.add("hidden");
   }
 
   toggleStopwatch() {
@@ -1010,10 +1100,12 @@ class Stopwatch {
     if (this.lapsContainer) {
       this.lapsContainer.classList.add("hidden");
     }
+    document.body.classList.remove("laps-open");
     if (this.timeDisplay) this.timeDisplay.classList.remove("running");
     this.playSound("reset");
     this.vibrate();
     this.persistState(true);
+    showToast("Stopwatch reset");
   }
 
   addLap() {
@@ -1034,6 +1126,7 @@ class Stopwatch {
       this.playSound("lap");
       this.vibrate();
       this.persistState();
+      showToast("Lap added");
     }
   }
 
@@ -1141,58 +1234,59 @@ class Stopwatch {
     // Update statistics
     this.updateLapStats();
 
-    console.log(`🏃 updateLaps called - Laps count: ${this.laps.length}, appendOnly: ${appendOnly}`);
+    // updated laps
+
 
     if (this.laps.length === 0) {
-      console.log("📝 No laps - hiding container");
       if (this.lapsContainer) {
         this.lapsContainer.classList.add("hidden");
       }
+      document.body.classList.remove("laps-open");
       if (this.lapsList) {
         this.lapsList.innerHTML = `
-          <div class="text-center py-8 text-white/60">
-            <div class="text-4xl mb-3">🏁</div>
-            <p class="font-inter">No lap times yet</p>
-            <p class="text-sm text-white/40">Start timing and press lap to begin!</p>
-          </div>
+          <li class="laps-empty" id="lapsEmptyMsg" role="status" aria-live="polite">
+            <span class="laps-empty-icon">🏁</span>
+            <span class="laps-empty-title">No lap times yet</span>
+            <span class="laps-empty-desc">Start timing and press lap to begin!</span>
+          </li>
         `;
       }
       return;
     }
 
-    console.log("📝 Laps found - showing container");
     if (this.lapsContainer) {
       this.lapsContainer.classList.remove("hidden");
-      // Ensure display is explicitly set for Tailwind compatibility
+      // Clear any inline display style to ensure CSS takes control
       this.lapsContainer.style.display = "";
-      console.log("✅ Laps container made visible");
-    } else {
-      console.error("❌ Laps container not found!");
     }
+    document.body.classList.add("laps-open");
     if (!this.lapsList) return;
 
-    // Efficient rendering: if appending, only render latest item to top
-    if (appendOnly && this.laps.length > 0) {
-      // Remove no-laps message if present
-      const noLapsMsg = this.lapsList.querySelector('.text-center');
-      if (noLapsMsg) {
-        this.lapsList.innerHTML = '';
-      }
-      
-      const lap = this.laps[this.laps.length - 1];
-      const el = this._renderMegaLap(lap, this.laps.length - 1);
-      this.lapsList.prepend(el);
-      return;
-    }
-
-    // Full re-render
+    // Full re-render (always, for accessibility and event delegation)
     const frag = document.createDocumentFragment();
     const reversedLaps = [...this.laps].reverse();
     this.lapsList.innerHTML = "";
     reversedLaps.forEach((lap, idx) => {
-      frag.appendChild(this._renderMegaLap(lap, this.laps.length - 1 - idx));
+      frag.appendChild(this._renderMegaLapLi(lap, this.laps.length - 1 - idx));
     });
     this.lapsList.appendChild(frag);
+
+    // Event delegation for copy buttons
+    this.lapsList.removeEventListener('click', this._lapListClickHandler);
+    this._lapListClickHandler = (e) => {
+      const btn = e.target.closest('.lap-copy-btn');
+      if (btn) {
+        const li = btn.closest('li[data-lap-index]');
+        if (!li) return;
+        const idx = parseInt(li.getAttribute('data-lap-index'), 10);
+        const lap = this.laps[idx];
+        if (!lap) return;
+        const segment = idx === 0 ? lap.time : lap.time - this.laps[idx - 1].time;
+        const text = `Lap ${lap.number}: ${this.formatTime(segment)} (Total: ${this.formatTime(lap.time)})`;
+        this._copyToClipboard(text);
+      }
+    };
+    this.lapsList.addEventListener('click', this._lapListClickHandler);
   }
 
   updateLapStats() {
@@ -1226,7 +1320,8 @@ class Stopwatch {
 
     // Average lap
     if (avgLap) {
-      const average = segmentTimes.reduce((a, b) => a + b, 0) / segmentTimes.length;
+      const average =
+        segmentTimes.reduce((a, b) => a + b, 0) / segmentTimes.length;
       avgLap.textContent = this.formatTime(average);
     }
 
@@ -1237,28 +1332,36 @@ class Stopwatch {
     }
   }
 
-  _renderMegaLap(lap, originalIndex) {
-    const lapRow = document.createElement("div");
-    lapRow.className = "flex items-center justify-between p-3 bg-white/5 hover:bg-white/10 rounded-lg border border-white/10 hover:border-white/20 transition-all duration-200 group animate-slide-in";
+  _renderMegaLapLi(lap, originalIndex) {
+    // <li> for semantic, role, and accessibility
+    const li = document.createElement('li');
+    li.className = "flex items-center justify-between p-3 bg-white/5 hover:bg-white/10 rounded-lg border border-white/10 hover:border-white/20 transition-all duration-200 group animate-slide-in";
+    li.setAttribute('role', 'listitem');
+    li.setAttribute('tabindex', '-1');
+    li.setAttribute('data-lap-index', originalIndex);
+    // Calculate segment time once for ARIA and logic
+    let segmentTime = lap.time;
+    if (originalIndex > 0 && this.laps[originalIndex - 1]) {
+      segmentTime = lap.time - this.laps[originalIndex - 1].time;
+    }
+    li.setAttribute('aria-label', `Lap ${lap.number}, segment ${this.formatTime(segmentTime)}, total ${this.formatTime(lap.time)}`);
 
-    // Calculate segment time
-    const segmentTime = originalIndex === 0 
-      ? lap.time 
-      : lap.time - this.laps[originalIndex - 1].time;
+    // ...segmentTime already calculated above...
 
-    // Determine diff against previous segment
+    // Difference calculation with bounds check
     let diffClass = "text-white/60";
     let diffText = "--";
-    if (originalIndex > 0) {
-      const prevSegTime = originalIndex === 1 
-        ? this.laps[0].time 
-        : this.laps[originalIndex - 1].time - this.laps[originalIndex - 2].time;
-      
+    if (originalIndex > 0 && this.laps[originalIndex - 1]) {
+      let prevSegTime = this.laps[originalIndex - 1].time;
+      if (originalIndex > 1 && this.laps[originalIndex - 2]) {
+        prevSegTime = this.laps[originalIndex - 1].time - this.laps[originalIndex - 2].time;
+      }
       const delta = segmentTime - prevSegTime;
-      if (delta < -50) { // More than 50ms faster
+      // Use a 50ms threshold, but could be made configurable
+      if (delta < -50) {
         diffClass = "text-green-400";
         diffText = `-${this.formatTimeDifference(-delta)}`;
-      } else if (delta > 50) { // More than 50ms slower
+      } else if (delta > 50) {
         diffClass = "text-red-400";
         diffText = `+${this.formatTimeDifference(delta)}`;
       } else {
@@ -1266,29 +1369,64 @@ class Stopwatch {
       }
     }
 
-    lapRow.innerHTML = `
-      <div class="flex items-center gap-4 flex-1">
-        <div class="flex items-center justify-center w-8 h-8 bg-primary/20 text-primary rounded-full text-sm font-bold">
-          ${lap.number}
-        </div>
-        <div class="flex-1">
-          <div class="text-white font-space font-semibold">${this.formatTime(segmentTime)}</div>
-          <div class="text-xs text-white/50 font-inter">Total: ${this.formatTime(lap.time)}</div>
-        </div>
-      </div>
-      <div class="flex items-center gap-3">
-        <div class="text-sm font-inter ${diffClass} hidden sm:block">${diffText}</div>
-        <button class="p-1.5 hover:bg-white/10 rounded-md transition-colors opacity-0 group-hover:opacity-100" 
-                title="Copy lap time" 
-                onclick="navigator.clipboard?.writeText('Lap ${lap.number}: ${this.formatTime(segmentTime)}')">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-white/60 hover:text-white">
-            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-          </svg>
-        </button>
-      </div>
-    `;
-    return lapRow;
+    // Build DOM safely (no innerHTML for user data)
+    const left = document.createElement('div');
+    left.className = 'flex items-center gap-4 flex-1';
+    const num = document.createElement('div');
+    num.className = 'flex items-center justify-center w-8 h-8 bg-primary/20 text-primary rounded-full text-sm font-bold';
+    num.textContent = lap.number;
+    const mid = document.createElement('div');
+    mid.className = 'flex-1';
+    const seg = document.createElement('div');
+    seg.className = 'text-white font-space font-semibold';
+    seg.textContent = this.formatTime(segmentTime);
+    const tot = document.createElement('div');
+    tot.className = 'text-xs text-white/50 font-inter';
+    tot.textContent = `Total: ${this.formatTime(lap.time)}`;
+    mid.appendChild(seg);
+    mid.appendChild(tot);
+    left.appendChild(num);
+    left.appendChild(mid);
+
+    const right = document.createElement('div');
+    right.className = 'flex items-center gap-3';
+    const diff = document.createElement('div');
+    diff.className = `text-sm font-inter ${diffClass} hidden sm:block`;
+    diff.textContent = diffText;
+    right.appendChild(diff);
+    const copyBtn = document.createElement('button');
+    copyBtn.className = 'p-1.5 hover:bg-white/10 rounded-md transition-colors opacity-0 group-hover:opacity-100 lap-copy-btn';
+    copyBtn.setAttribute('type', 'button');
+    copyBtn.setAttribute('title', 'Copy lap time');
+    copyBtn.setAttribute('aria-label', `Copy Lap ${lap.number} time`);
+    copyBtn.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-white/60 hover:text-white"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>`;
+    right.appendChild(copyBtn);
+
+    li.appendChild(left);
+    li.appendChild(right);
+    return li;
+  }
+
+  _copyToClipboard(text) {
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(text).then(() => showToast('Lap copied'), () => showToast('Copy failed'));
+    } else {
+      // Fallback for older browsers
+      const textarea = document.createElement('textarea');
+      textarea.value = text;
+      textarea.setAttribute('readonly', '');
+      textarea.style.position = 'absolute';
+      textarea.style.left = '-9999px';
+      document.body.appendChild(textarea);
+      textarea.select();
+      try {
+        document.execCommand('copy');
+        showToast('Lap copied');
+      } catch (err) {
+        showToast('Copy failed');
+      }
+      document.body.removeChild(textarea);
+    }
   }
 
   formatTimeDifference(milliseconds) {
@@ -1348,11 +1486,11 @@ class Stopwatch {
   // Visual feedback for keyboard shortcuts
   flashButton(button) {
     if (!button) return;
-    button.style.transform = 'scale(0.95)';
-    button.style.transition = 'transform 0.1s ease';
+    button.style.transform = "scale(0.95)";
+    button.style.transition = "transform 0.1s ease";
     setTimeout(() => {
-      button.style.transform = '';
-      button.style.transition = '';
+      button.style.transform = "";
+      button.style.transition = "";
     }, 100);
   }
 
@@ -1731,156 +1869,7 @@ class SettingsManager {
 }
 
 // Initialize the application
-document.addEventListener("DOMContentLoaded", () => {
-  const stopwatch = new Stopwatch();
-  const settingsManager = new SettingsManager(stopwatch);
-
-  // Register settings modal with modal manager
-  modalManager.registerModal(
-    "settingsPanel",
-    () => {
-      stopwatch.settingsPanel.classList.add("show");
-      stopwatch.settingsOverlay.classList.add("show");
-      // Hide FAB buttons
-      const fabGroup = document.querySelector(".fab-group");
-      if (fabGroup) fabGroup.classList.add("hidden");
-    },
-    () => {
-      stopwatch.settingsPanel.classList.remove("show");
-      stopwatch.settingsOverlay.classList.remove("show");
-      // Show FAB buttons
-      const fabGroup = document.querySelector(".fab-group");
-      if (fabGroup) fabGroup.classList.remove("hidden");
-    }
-  );
-
-  // Set initial hero background on load
-  const bgPreset = stopwatch.getSetting("background", "morning-mist");
-  if (bgPreset === "custom") {
-    const customUrl = stopwatch.getSetting("customBackgroundUrl", "");
-    if (customUrl) {
-      const heroBg = document.getElementById("heroBg");
-      if (heroBg) heroBg.style.backgroundImage = `url('${customUrl}')`;
-    }
-  } else {
-    stopwatch.setBackground(bgPreset);
-  }
-  // Export for debugging
-  window.stopwatch = stopwatch;
-
-  // Wire lap actions
-  const copyBtn = document.getElementById("copyLapsBtn");
-  const exportBtn = document.getElementById("exportLapsBtn");
-  const clearBtn = document.getElementById("clearLapsBtn");
-  function lapsToText() {
-    if (!stopwatch.laps.length) return "";
-    return stopwatch.laps
-      .map((l, i) => {
-        const seg = i === 0 ? l.time : l.time - stopwatch.laps[i - 1].time;
-        return `Lap ${l.number}\tTotal ${stopwatch.formatTime(
-          l.time
-        )}\tSegment ${stopwatch.formatTimeDifference(seg)}`;
-      })
-      .join("\n");
-  }
-  copyBtn?.addEventListener("click", async () => {
-    const txt = lapsToText();
-    if (!txt) return;
-    try {
-      await navigator.clipboard.writeText(txt);
-    } catch {}
-  });
-  exportBtn?.addEventListener("click", () => {
-    if (!stopwatch.laps.length) return;
-    const header = "Lap,Total,Segment\n";
-    const rows = stopwatch.laps
-      .map((l, i) => {
-        const seg = i === 0 ? l.time : l.time - stopwatch.laps[i - 1].time;
-        return `${l.number},${stopwatch.formatTime(
-          l.time
-        )},${stopwatch.formatTimeDifference(seg)}`;
-      })
-      .join("\n");
-    const blob = new Blob([header + rows], { type: "text/csv;charset=utf-8;" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "laps.csv";
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-    URL.revokeObjectURL(url);
-  });
-  clearBtn?.addEventListener("click", () => {
-    stopwatch.laps = [];
-    stopwatch.updateLaps();
-    stopwatch.persistState();
-  });
-
-  // Lap search functionality
-  const lapSearch = document.getElementById("lapSearch");
-  lapSearch?.addEventListener("input", (e) => {
-    const searchTerm = e.target.value.toLowerCase();
-    const lapRows = document.querySelectorAll('#lapsList > div:not(.text-center)');
-    
-    lapRows.forEach(row => {
-      const text = row.textContent.toLowerCase();
-      
-      if (text.includes(searchTerm)) {
-        row.style.display = 'flex';
-      } else {
-        row.style.display = 'none';
-      }
-    });
-  });
-
-  // Lucide icons render pass
-  try {
-    if (window.lucide?.createIcons) {
-      // replace any data-lucide attributes if present (future-proof)
-      window.lucide.createIcons();
-    }
-    // Directly set dynamic icons we control
-    const setSvg = (el, name, size = 22) => {
-      if (!el || !window.lucide?.icons?.[name]) return;
-      el.innerHTML = window.lucide.icons[name].toSvg({
-        width: size,
-        height: size,
-      });
-    };
-    // Start/Pause icon placeholder exists in #startPauseIcon
-    setSvg(document.getElementById("startPauseIcon"), "play", 22);
-    // Lap icon
-    document
-      .querySelectorAll(".lap-icon")
-      .forEach((icon) => setSvg(icon, "flag", 18));
-    // FAB icons
-    document.querySelector("#shareBtn .fab-icon") &&
-      (document.querySelector("#shareBtn .fab-icon").innerHTML =
-        window.lucide.icons["share-2"].toSvg({ width: 26, height: 26 }));
-    document.querySelector("#fullscreenBtn .fab-icon") &&
-      (document.querySelector("#fullscreenBtn .fab-icon").innerHTML =
-        window.lucide.icons["maximize"].toSvg({ width: 26, height: 26 }));
-    document.querySelector("#settingsToggle .fab-icon") &&
-      (document.querySelector("#settingsToggle .fab-icon").innerHTML =
-        window.lucide.icons["settings"].toSvg({ width: 26, height: 26 }));
-    // Navbar logo
-    document.querySelector(".navbar-logo") &&
-      (document.querySelector(".navbar-logo").innerHTML = window.lucide.icons[
-        "timer"
-      ].toSvg({ width: 32, height: 32 }));
-    // Share modal icon and close button
-    setSvg(document.querySelector(".share-icon"), "share-2", 28);
-    setSvg(document.getElementById("closeShareBtn"), "x", 18);
-    setSvg(document.getElementById("copyShareLinkBtn"), "copy", 16);
-    // Developer button avatar (use user icon within round btn)
-    setSvg(
-      document.querySelector(".developer-info-btn .developer-avatar"),
-      "user",
-      24
-    );
-  } catch {}
-});
+// Removed duplicate initialization block to prevent multiple Stopwatch instances
 
 // ================================================================================================
 // PERFORMANCE MONITORING & ERROR HANDLING
@@ -1888,21 +1877,15 @@ document.addEventListener("DOMContentLoaded", () => {
 class PerformanceMonitor {
   constructor() {
     this.startTime = performance.now();
-    this.metrics = {
-      errors: [],
-      interactions: [],
-      performance: {},
-    };
+    this.metrics = { errors: [], interactions: [], performance: {} };
     this.init();
   }
 
   init() {
-    // Monitor page load performance
     window.addEventListener("load", () => {
       this.recordLoadMetrics();
     });
 
-    // Monitor errors
     window.addEventListener("error", (e) => {
       this.recordError("JavaScript Error", e.error, e.filename, e.lineno);
     });
@@ -1911,10 +1894,7 @@ class PerformanceMonitor {
       this.recordError("Promise Rejection", e.reason);
     });
 
-    // Monitor user interactions
     this.setupInteractionTracking();
-
-    // Monitor web vitals if available
     this.setupWebVitals();
   }
 
@@ -1939,7 +1919,7 @@ class PerformanceMonitor {
   recordError(type, error, file = "", line = 0) {
     const errorData = {
       type,
-      message: error.message || error,
+      message: error?.message || error,
       file,
       line,
       timestamp: new Date().toISOString(),
@@ -1948,10 +1928,6 @@ class PerformanceMonitor {
     };
 
     this.metrics.errors.push(errorData);
-    console.error("Performance Monitor - Error recorded:", errorData);
-
-    // In production, you could send this to an analytics service
-    // this.sendToAnalytics('error', errorData);
   }
 
   recordInteraction(type, element, duration = 0) {
@@ -1964,27 +1940,23 @@ class PerformanceMonitor {
     };
 
     this.metrics.interactions.push(interactionData);
-
-    // Keep only last 50 interactions to prevent memory issues
     if (this.metrics.interactions.length > 50) {
       this.metrics.interactions = this.metrics.interactions.slice(-50);
     }
   }
 
   setupInteractionTracking() {
-    // Track button clicks with timing
     document.addEventListener("click", (e) => {
-      if (e.target.matches("button, .fab-btn, .control-btn-premium")) {
+      const target = e.target.closest("button, .fab-btn, .control-btn-premium");
+      if (target) {
         const startTime = performance.now();
-        // Record after a brief delay to capture any processing time
         requestAnimationFrame(() => {
           const duration = performance.now() - startTime;
-          this.recordInteraction("click", e.target, duration);
+          this.recordInteraction("click", target, duration);
         });
       }
     });
 
-    // Track keyboard interactions
     document.addEventListener("keydown", (e) => {
       if (["Space", "KeyR", "KeyL", "Escape"].includes(e.code)) {
         this.recordInteraction("keyboard", e.target);
@@ -1993,9 +1965,8 @@ class PerformanceMonitor {
   }
 
   setupWebVitals() {
-    // Monitor First Contentful Paint
     if (
-      PerformanceObserver &&
+      typeof PerformanceObserver !== "undefined" &&
       PerformanceObserver.supportedEntryTypes?.includes("paint")
     ) {
       const paintObserver = new PerformanceObserver((list) => {
@@ -2008,9 +1979,8 @@ class PerformanceMonitor {
       paintObserver.observe({ entryTypes: ["paint"] });
     }
 
-    // Monitor Largest Contentful Paint
     if (
-      PerformanceObserver &&
+      typeof PerformanceObserver !== "undefined" &&
       PerformanceObserver.supportedEntryTypes?.includes(
         "largest-contentful-paint"
       )
@@ -2018,14 +1988,13 @@ class PerformanceMonitor {
       const lcpObserver = new PerformanceObserver((list) => {
         const entries = list.getEntries();
         const lastEntry = entries[entries.length - 1];
-        this.metrics.performance.lcp = lastEntry.startTime;
+        if (lastEntry) this.metrics.performance.lcp = lastEntry.startTime;
       });
       lcpObserver.observe({ entryTypes: ["largest-contentful-paint"] });
     }
 
-    // Monitor Cumulative Layout Shift
     if (
-      PerformanceObserver &&
+      typeof PerformanceObserver !== "undefined" &&
       PerformanceObserver.supportedEntryTypes?.includes("layout-shift")
     ) {
       let clsScore = 0;
@@ -2045,11 +2014,8 @@ class PerformanceMonitor {
     return this.metrics;
   }
 
-  // Method to send metrics to analytics (placeholder)
   sendToAnalytics(type, data) {
-    // In production, implement sending to your analytics service
-    // Example: Google Analytics, Mixpanel, etc.
-    console.log(`Analytics - ${type}:`, data);
+    // placeholder
   }
 }
 
@@ -2088,78 +2054,134 @@ if ("getBattery" in navigator) {
 // ================================================================================================
 // INITIALIZE APPLICATION WITH ENHANCED ERROR HANDLING
 // ================================================================================================
+// Single-run app initializer (creates Stopwatch, Settings, modals, and actions)
 function initializeApp() {
-  console.log("🚀 Initializing Aesthetic Stopwatch...");
-  
   try {
-    // Initialize quotes manager
+    if (window.__APP_INITIALIZED__) return;
+    window.__APP_INITIALIZED__ = true;
+
+    // Core instances
+    const stopwatch = new Stopwatch();
+    window.stopwatch = stopwatch;
     window.quotesManager = new QuotesManager();
-    console.log("✅ Quotes manager initialized");
-    
-    // Initialize stopwatch
-    window.stopwatch = new Stopwatch();
-    console.log("✅ Stopwatch initialized");
-    
-    // Initialize FAB buttons and modals
-    initializeFABButtons();
-    console.log("✅ FAB buttons and modals initialized");
-    
-    // Load first random quote with delay for DOM readiness
-    setTimeout(() => {
-      if (window.quotesManager) {
-        window.quotesManager.loadRandomQuote();
-      }
-    }, 500);
-    
-    // Test functionality
-    setTimeout(() => {
-      if (window.stopwatch) {
-        console.log("🧪 Testing components...");
-        const lapsContainer = document.getElementById("lapsContainer");
-        const fabGroup = document.querySelector(".fab-group");
-        const settingsPanel = document.getElementById("settingsPanel");
-        
-        console.log("  Laps container found:", lapsContainer ? "✅" : "❌");
-        console.log("  FAB group found:", fabGroup ? "✅" : "❌");
-        console.log("  Settings panel found:", settingsPanel ? "✅" : "❌");
-        
-        if (settingsPanel) {
-          // Ensure settings panel is hidden by default
+
+    // Settings manager (binds settings UI to stopwatch)
+    const settingsManager = new SettingsManager(stopwatch);
+    window.settingsManager = settingsManager;
+
+    // Register Settings panel with modal manager (for proper show/hide + scroll lock)
+    const settingsPanel = document.getElementById("settingsPanel");
+    const settingsOverlay = document.getElementById("settingsOverlay");
+    if (settingsPanel && settingsOverlay && window.modalManager) {
+      modalManager.registerModal(
+        "settingsPanel",
+        () => {
+          settingsOverlay.classList.add("show");
+          settingsPanel.classList.add("show");
+          document.body.classList.add("modal-open");
+        },
+        () => {
           settingsPanel.classList.remove("show");
-          console.log("  Settings panel properly hidden");
+          settingsOverlay.classList.remove("show");
+          document.body.classList.remove("modal-open");
         }
-      }
-    }, 2000);
-    
-  } catch (error) {
-    console.error("❌ Failed to initialize application:", error);
-    // Retry initialization after delay
-    setTimeout(initializeApp, 2000);
+      );
+    }
+
+    // Initialize FAB buttons (share/settings/fullscreen + modals)
+    initializeFABButtons();
+
+    // Wire Lap actions (copy/export/clear)
+    const copyLapsBtn = document.getElementById("copyLapsBtn");
+    if (copyLapsBtn) {
+      copyLapsBtn.addEventListener("click", async () => {
+        if (!stopwatch || stopwatch.laps.length === 0) {
+          showToast("No laps to copy");
+          return;
+        }
+        const lines = stopwatch.laps.map((lap, i) => {
+          const segment = i === 0 ? lap.time : lap.time - stopwatch.laps[i - 1].time;
+          return `Lap ${lap.number}: ${stopwatch.formatTime(segment)} (Total: ${stopwatch.formatTime(lap.time)})`;
+        });
+        try {
+          await navigator.clipboard.writeText(lines.join("\n"));
+          showToast("Laps copied");
+        } catch (_) {
+          showToast("Copy failed");
+        }
+      });
+    }
+
+    const exportLapsBtn = document.getElementById("exportLapsBtn");
+    if (exportLapsBtn) {
+      exportLapsBtn.addEventListener("click", () => {
+        if (!stopwatch || stopwatch.laps.length === 0) {
+          showToast("No laps to export");
+          return;
+        }
+        const header = ["Lap", "Segment", "Total"]; 
+        const rows = stopwatch.laps.map((lap, i) => {
+          const segment = i === 0 ? lap.time : lap.time - stopwatch.laps[i - 1].time;
+          return [
+            lap.number,
+            stopwatch.formatTime(segment),
+            stopwatch.formatTime(lap.time),
+          ];
+        });
+        const csv = [header.join(","), ...rows.map((r) => r.join(","))].join("\n");
+        const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `laps-${Date.now()}.csv`;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        URL.revokeObjectURL(url);
+        showToast("CSV exported");
+      });
+    }
+
+    const clearLapsBtn = document.getElementById("clearLapsBtn");
+    if (clearLapsBtn) {
+      clearLapsBtn.addEventListener("click", () => {
+        if (!stopwatch) return;
+        if (stopwatch.laps.length === 0) {
+          showToast("No laps to clear");
+          return;
+        }
+        stopwatch.laps = [];
+        stopwatch.updateLaps();
+        stopwatch.persistState();
+        showToast("Laps cleared");
+      });
+    }
+
+    // Optional: initialize Lucide if available
+    if (window.lucide && typeof window.lucide.createIcons === "function") {
+      try { window.lucide.createIcons(); } catch {}
+    }
+
+  } catch (e) {
+    // In production, console is silenced; still try to surface a toast
+    try { showToast("Initialization error"); } catch {}
   }
-
-  // Enhanced error reporting
-  window.addEventListener('error', (e) => {
-    console.error('💥 Global error:', e.error);
-  });
-
-  console.log("✅ Application fully initialized");
 }
 
 // Multiple initialization strategies for maximum compatibility
 document.addEventListener("DOMContentLoaded", initializeApp);
 
 // Fallback for late initialization
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', initializeApp);
-} else if (document.readyState === 'interactive' || document.readyState === 'complete') {
-  // DOM already loaded
+if (
+  document.readyState === "interactive" ||
+  document.readyState === "complete"
+) {
   setTimeout(initializeApp, 100);
 }
 
 // Final fallback
-window.addEventListener('load', () => {
+window.addEventListener("load", () => {
   if (!window.stopwatch || !window.quotesManager) {
-    console.log("🔄 Final fallback initialization...");
     initializeApp();
   }
 });
