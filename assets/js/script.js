@@ -148,6 +148,24 @@ function debounce(func, wait) {
 }
 
 // ================================================================================================
+// QUOTE TOGGLE BUTTON
+// ================================================================================================
+document.addEventListener('DOMContentLoaded', () => {
+    const quoteContainer = document.getElementById('quoteContainer');
+    const toggleQuoteBtn = document.getElementById('toggleQuoteBtn');
+    if (toggleQuoteBtn && quoteContainer) {
+        toggleQuoteBtn.addEventListener('click', () => {
+            if (quoteContainer.style.display === 'none') {
+                quoteContainer.style.display = '';
+                toggleQuoteBtn.textContent = 'Hide Quote';
+            } else {
+                quoteContainer.style.display = 'none';
+                toggleQuoteBtn.textContent = 'Show Quote';
+            }
+        });
+    }
+});
+// ================================================================================================
 // MOTIVATIONAL QUOTES API
 // ================================================================================================
 class QuotesManager {
@@ -170,8 +188,9 @@ class QuotesManager {
             { text: "Focus on being productive instead of busy.", author: "Tim Ferriss" }
         ];
         this.currentQuoteIndex = 0;
-        this.apiUrl = 'https://thequoteshub.com/api/random-quote?format=json';
-        this.fallbackApiUrl = 'https://zenquotes.io/api/random';
+    // Use zenquotes.io as primary, quotable.io as fallback
+    this.apiUrl = 'https://zenquotes.io/api/random';
+    this.fallbackApiUrl = 'https://api.quotable.io/random';
         this.init();
     }
 
@@ -220,9 +239,9 @@ class QuotesManager {
         try {
             const response = await fetch(this.apiUrl);
             if (!response.ok) throw new Error('API Error');
-            
             const data = await response.json();
-            if (data && data[0]) {
+            // zenquotes.io returns an array with .q and .a
+            if (Array.isArray(data) && data[0] && data[0].q && data[0].a) {
                 return {
                     text: data[0].q,
                     author: data[0].a
@@ -237,12 +256,12 @@ class QuotesManager {
         try {
             const response = await fetch(this.fallbackApiUrl);
             if (!response.ok) throw new Error('Fallback API Error');
-            
             const data = await response.json();
-            if (data.statusCode === 200 && data.data) {
+            // quotable.io returns {content, author}
+            if (data && data.content && data.author) {
                 return {
-                    text: data.data.quoteText,
-                    author: data.data.quoteAuthor
+                    text: data.content,
+                    author: data.author
                 };
             }
         } catch (error) {

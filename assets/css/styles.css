@@ -129,44 +129,40 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 1.8rem;
-    padding: 0 1.2rem 2rem 1.2rem;
+    gap: 2.2rem;
+    padding: 0 0.5rem 2.5rem 0.5rem;
     width: 100%;
-    max-width: 100%;
+    max-width: 100vw;
     background: none;
     box-shadow: none;
     border: none;
-    /* Prevent background zoom */
     contain: layout;
     transform: translateZ(0);
+    min-height: 40vh;
+    margin: 0 auto;
 }
 .time-premium {
     font-family: 'Space Grotesk', monospace;
-    font-size: clamp(4rem, 15vw, 9rem);
+    font-size: clamp(3.2rem, 18vw, 10rem);
     font-weight: 900;
     color: #ffffff;
     letter-spacing: -0.02em;
     user-select: none;
     text-align: center;
-    line-height: 1;
+    line-height: 1.1;
     margin-bottom: 0.3em;
-    background: linear-gradient(145deg, 
-        rgba(255, 255, 255, 0.15) 0%, 
-        rgba(255, 255, 255, 0.08) 100%);
-    backdrop-filter: blur(25px);
-    border: 1px solid rgba(255, 255, 255, 0.25);
-    border-radius: 1.75rem;
-    padding: 0.3em 0.8em;
-    box-shadow: 
-        0 10px 40px 0 rgba(0, 0, 0, 0.2),
-        0 6px 20px 0 rgba(102, 166, 255, 0.25),
-        inset 0 1px 1px 0 rgba(255, 255, 255, 0.25);
-    transition: all 0.2s ease-out;
-    text-shadow: 
-        0 0 30px rgba(102, 166, 255, 0.7),
-        0 2px 10px rgba(0, 0, 0, 0.4);
+    background: linear-gradient(145deg, rgba(255,255,255,0.18) 0%, rgba(255,255,255,0.09) 100%);
+    backdrop-filter: blur(30px);
+    border: 1.5px solid rgba(255,255,255,0.28);
+    border-radius: 2.2rem;
+    padding: 0.4em 1.2em;
+    box-shadow: 0 10px 40px 0 rgba(0,0,0,0.22), 0 6px 20px 0 rgba(102,166,255,0.28), inset 0 1px 1px 0 rgba(255,255,255,0.28);
+    transition: all 0.2s cubic-bezier(.4,0,.2,1);
+    text-shadow: 0 0 36px rgba(102,166,255,0.8), 0 2px 12px rgba(0,0,0,0.45);
     position: relative;
     z-index: 10;
+    min-width: 180px;
+    max-width: 95vw;
 }
 
 .time-premium.running {
@@ -3309,22 +3305,22 @@ body.font-jetbrains-mono { --font-body: 'JetBrains Mono', monospace; }
 }
 
 /* Large Desktop (1440px+) */
-@media (min-width: 1441px) {
-    .time-premium {
-        font-size: 7rem !important;
-    }
-    
-    .timer-premium {
-        gap: 3rem;
-    }
-    
+@media (max-width: 700px) {
     .navbar-premium {
-        top: 3rem;
-        left: 3rem;
+        top: 1.1rem;
+        left: 1.1rem;
+        padding: 0.7rem 1rem;
+        min-width: 180px;
+        max-width: calc(100vw - 2.2rem);
     }
-}
-
-/* Ultra-wide Desktop (1920px+) */
+    .navbar-content {
+        width: 100%;
+    }
+    .navbar-brand {
+        gap: 0.7rem;
+    }
+    .navbar-title {
+        font-size: 1.1rem;
 @media (min-width: 1921px) {
     .main-premium {
         max-width: 1600px;
@@ -3337,6 +3333,47 @@ body.font-jetbrains-mono { --font-body: 'JetBrains Mono', monospace; }
 
 /* Additional Mobile Enhancements */
 @media (max-width: 480px) {
+    .main-premium {
+        padding-top: 2.5rem;
+    }
+    .timer-premium {
+        gap: 1.2rem;
+        padding-bottom: 1.2rem;
+    }
+    .time-premium {
+        font-size: clamp(2.2rem, 18vw, 4.2rem) !important;
+        padding: 0.25em 0.5em;
+        min-width: 120px;
+    }
+    .quote-container {
+        margin: 0 auto 1.2rem auto;
+        padding: 0 0.5rem;
+    }
+    .quote-text {
+        font-size: 0.95rem;
+        line-height: 1.3;
+    }
+    .quote-author {
+        font-size: 0.8rem;
+    }
+    .button-group-premium {
+        flex-direction: column;
+        gap: 0.7rem;
+        width: 100%;
+    }
+    .control-btn-premium {
+        width: 100%;
+        padding: 0.8rem;
+    }
+    .fab-group {
+        bottom: 0.7rem;
+        right: 0.7rem;
+        gap: 0.4rem;
+    }
+    .fab-btn {
+        width: 44px;
+        height: 44px;
+    }
     .theme-selector,
     .toggle-group {
         flex-direction: column;
@@ -3346,29 +3383,24 @@ body.font-jetbrains-mono { --font-body: 'JetBrains Mono', monospace; }
     .custom-toggle {
         min-width: auto;
     }
-    
     .install-btn, .install-btn-navbar {
         font-size: 0.85rem;
         padding: 0.5rem 0.8rem;
     }
-    
     .update-notification {
         left: 1rem;
         right: 1rem;
         transform: none;
     }
-    
-    /* Mobile-specific settings panel */
+}
     .settings-panel {
         width: calc(100vw - 2rem);
         max-width: 350px;
         right: 1rem;
     }
-    
     .background-presets {
         grid-template-columns: repeat(2, 1fr);
     }
-    
     .color-presets {
         grid-template-columns: repeat(3, 1fr);
     }
@@ -3391,4 +3423,3 @@ body.font-jetbrains-mono { --font-body: 'JetBrains Mono', monospace; }
         --text-primary: #ffffff;
         --text-secondary: #e0e0e0;
     }
-}
