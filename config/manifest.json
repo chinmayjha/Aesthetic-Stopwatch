@@ -2,7 +2,7 @@
   "name": "Aesthetic Stopwatch by Chinmay",
   "short_name": "Stopwatch",
   "description": "A beautiful, minimal, glassmorphic stopwatch for timing, productivity, and workouts",
-  "start_url": "/",
+  "start_url": "/index.html",
   "display": "standalone",
   "display_override": ["window-controls-overlay", "standalone", "minimal-ui"],
   "background_color": "#1a1a2e",
@@ -14,19 +14,19 @@
   "prefer_related_applications": false,
   "icons": [
     {
-      "src": "./assets/icons/favicon.png",
+      "src": "/assets/icons/favicon.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "./assets/icons/favicon.png",
+      "src": "/assets/icons/favicon.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"
     },
     {
-      "src": "./assets/icons/favicon.svg",
+      "src": "/assets/icons/favicon.svg",
       "sizes": "any",
       "type": "image/svg+xml",
       "purpose": "any"
@@ -37,17 +37,8 @@
       "name": "Quick Timer",
       "short_name": "Timer",
       "description": "Start timing instantly",
-      "url": "/?quick=timer",
-      "icons": [{ "src": "./assets/icons/favicon-32.png", "sizes": "32x32" }]
+      "url": "/index.html?quick=timer"
     }
   ],
-  "screenshots": [
-    {
-      "src": "./assets/icons/og-image.png",
-      "sizes": "1200x630",
-      "type": "image/png",
-      "form_factor": "wide",
-      "label": "Aesthetic Stopwatch Interface"
-    }
-  ]
+  "screenshots": []
 }
